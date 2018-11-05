@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import sofranko.controllers.LoginScreenController;
 
-public class Login extends Application {
+public class LoginApp extends Application {
 	public void start(Stage stage) throws Exception {
 		LoginScreenController loginScreenController = new LoginScreenController();
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("LoginScreen.fxml"));
