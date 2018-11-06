@@ -22,19 +22,6 @@
       <scope>test</scope>
     </dependency>
     
-    <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-controls -->
-<dependency>
-    <groupId>org.openjfx</groupId>
-    <artifactId>javafx-controls</artifactId>
-    <version>11.0.1-ea+1</version>
-</dependency>
-    
-    <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
-<dependency>
-    <groupId>org.openjfx</groupId>
-    <artifactId>javafx-fxml</artifactId>
-    <version>11.0.1-ea+1</version>
-</dependency>
-    
+  
   </dependencies>
 </project>
