@@ -1,11 +1,11 @@
-package sofranko.realityHelper;
+package realityHelper;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import sofranko.controllers.LoginScreenController;
+import controllers.LoginScreenController;
 
 public class LoginApp extends Application {
 	public void start(Stage stage) throws Exception {

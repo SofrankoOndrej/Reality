@@ -1,4 +1,4 @@
-package sofranko.controllers;
+package controllers;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
