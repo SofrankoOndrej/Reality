@@ -1,4 +1,4 @@
-package sofranko.realityHelper;
+package realityHelper;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
