@@ -7,6 +7,7 @@ public class User {
 	private String surname;
 	private String username;
 	private String password;
+	private String email;
 
 	public String getUsername() {
 		return username;
@@ -23,8 +24,6 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	private String email;
 
 	public String getName() {
 		return name;
@@ -60,8 +59,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User: [id=" + getId() + ", name: " + getName() + ", surname: " + getSurname() 
-				+ ", email: " + getEmail() + ", username: " + getUsername() + "]";
+		return "User: [id=" + getId() + ", name: " + getName() + ", surname: " + getSurname() + ", email: " + getEmail()
+				+ ", username: " + getUsername() + "]";
 	}
 
 }

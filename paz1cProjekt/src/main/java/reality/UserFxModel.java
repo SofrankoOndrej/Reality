@@ -6,23 +6,20 @@ import javafx.beans.property.StringProperty;
 
 public class UserFxModel {
 
-//	StringProperty id = new SimpleStringProperty();
+	private Long id;
 	StringProperty name = new SimpleStringProperty();
 	StringProperty surname = new SimpleStringProperty();
 	StringProperty email = new SimpleStringProperty();
 	StringProperty username = new SimpleStringProperty();
 	StringProperty password = new SimpleStringProperty();
 	
-//	public String getId() {
-//		return id.get();
-//	}
-//	public void setId(String id) {
-//		this.id.set(id);
-//	}
-//	public StringProperty idProperty() {
-//		return id;
-//	}
-	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+		
 	public String getName() {
 		return name.get();
 	}
@@ -75,6 +72,7 @@ public class UserFxModel {
 	
 	public User getUser() {
 		User user = new User();
+		user.setId(getId());
 		user.setName(getName());
 		user.setSurname(getSurname());
 		user.setEmail(getEmail());
@@ -82,6 +80,15 @@ public class UserFxModel {
 		user.setPassword(getPassword());
 		
 		return user;
+	}
+	
+	public void setUser(User user) {
+		setId(user.getId());
+		setName(user.getName());
+		setSurname(user.getSurname());
+		setEmail(user.getEmail());
+		setUsername(user.getUsername());
+		setPassword(user.getPassword());
 	}
 	
 	@Override

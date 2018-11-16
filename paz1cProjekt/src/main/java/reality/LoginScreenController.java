@@ -2,7 +2,6 @@ package reality;
 
 import java.io.IOException;
 
-import entities.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,7 +14,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import util.javaFxUtils;
+
 
 public class LoginScreenController {
 
