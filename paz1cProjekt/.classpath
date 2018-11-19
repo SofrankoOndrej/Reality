@@ -28,5 +28,10 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Program Files/Java/arcgis-runtime-sdk-java-100.4.0/libs/arcgis-java-api.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/arcgis-runtime-sdk-java-100.4.0/libs/arcgis-java-api-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/arcgis-runtime-sdk-java-100.4.0/libs/commons-codec-1.11.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/arcgis-runtime-sdk-java-100.4.0/libs/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/arcgis-runtime-sdk-java-100.4.0/libs/gson-2.8.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

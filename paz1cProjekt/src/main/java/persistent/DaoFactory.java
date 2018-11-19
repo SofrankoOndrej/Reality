@@ -17,19 +17,12 @@ public enum DaoFactory {
 		return userDao;
 	}
 	
-//	public WorkshopDao getWorkshopDao() {
-//		if (workshopDao == null) {
-//			workshopDao = new MysqlWorkshopDao(getJdbcTemplate());
-//		}
-//		return workshopDao;
-//	}
-	
 	private JdbcTemplate getJdbcTemplate() {
 		if (jdbcTemplate == null) {
 			MysqlDataSource dataSource = new MysqlDataSource();
 			dataSource.setUser("ondro");
 			dataSource.setPassword("ondro.123");
-//			dataSource.setDatabaseName("registracia_itat");
+			dataSource.setDatabaseName("project_scheme");
 			dataSource.setUrl("jdbc:mysql://localhost/project_scheme?serverTimezone=Europe/Bratislava");
 			jdbcTemplate = new JdbcTemplate(dataSource);
 		}

@@ -41,6 +41,12 @@ public class LoginScreenController {
 		signinButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				System.out.println("try to login.");
+				// select z databazy podla uzivatelskeho mena
+				
+				// BCrypt overenie hesla
+				
+				// nacitanie uvitacieho zobrazenia aplikacie alebo chybova hlaska
+						
 			}
 		});
 
