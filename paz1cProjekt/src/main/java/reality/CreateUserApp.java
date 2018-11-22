@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class CreateUserApp extends Application {
+	@Override
 	public void start(Stage stage) throws Exception {
 		CreateUserController createUserController = new CreateUserController();
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("CreateUser.fxml"));

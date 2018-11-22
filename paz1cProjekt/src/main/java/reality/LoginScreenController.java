@@ -39,6 +39,7 @@ public class LoginScreenController {
 	@FXML
 	void initialize() {
 		signinButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("try to login.");
 				// select z databazy podla uzivatelskeho mena
@@ -51,6 +52,7 @@ public class LoginScreenController {
 		});
 
 		signupButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
 			public void handle(ActionEvent event) {
 				CreateUserController createUserController = new CreateUserController();
 				showModalWindow(createUserController, "CreateUser.fxml");
@@ -58,19 +60,7 @@ public class LoginScreenController {
 
 		});
 
-		// assert passwordTextfield != null : "fx:id=\"passwordTextfield\" was not
-		// injected: check your FXML file 'loginScreen.fxml'.";
-		// assert usernameTextfield != null : "fx:id=\"usernameTextfield\" was not
-		// injected: check your FXML file 'loginScreen.fxml'.";
-		// assert signinButton != null : "fx:id=\"signinButton\" was not injected: check
-		// your FXML file 'loginScreen.fxml'.";
-		// assert signupButton != null : "fx:id=\"signupButton\" was not injected: check
-		// your FXML file 'loginScreen.fxml'.";
-		// assert resetpasswordButton != null : "fx:id=\"resetpasswordButton\" was not
-		// injected: check your FXML file 'loginScreen.fxml'.";
-		// assert wronginputTextlabel != null : "fx:id=\"wronginputTextlabel\" was not
-		// injected: check your FXML file 'loginScreen.fxml'.";
-
+	
 	}
 
 	private void showModalWindow(Object controller, String fxml) {

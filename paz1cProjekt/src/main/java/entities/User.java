@@ -59,8 +59,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User: [id=" + getId() + ", name: " + getName() + ", surname: " + getSurname() + ", email: " + getEmail()
-				+ ", username: " + getUsername() + "]";
+		return "User: [id: " + getId() + ", name: " + getName() + ", surname: " + getSurname() + ", email: " + getEmail()
+				+ ", username: " + getUsername() + " ]";
 	}
 
 }

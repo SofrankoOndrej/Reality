@@ -6,23 +6,22 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class LoginApp extends Application {
+public class MainApp extends Application {
+
 	@Override
 	public void start(Stage stage) throws Exception {
-		LoginScreenController loginScreenController = new LoginScreenController();
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("LoginScreen.fxml"));
-		fxmlLoader.setController(loginScreenController);
-		
-		Parent rootPane = fxmlLoader.load()	;
+		CreateMainAppController createMainAppController = new CreateMainAppController();
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
+		fxmlLoader.setController(createMainAppController);
+
+		Parent rootPane = fxmlLoader.load();
 		Scene scene = new Scene(rootPane);
-		stage.setTitle("login screen");
+		stage.setTitle("Main map app");
 		stage.setScene(scene);
 		stage.show();
-		
 	}
 
 	public static void main(String[] args) {
 		launch(args);
 	}
-
 }

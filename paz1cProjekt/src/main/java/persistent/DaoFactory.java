@@ -6,17 +6,18 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 
 public enum DaoFactory {
 	INSTANCE;
-	
+
 	private JdbcTemplate jdbcTemplate;
 	private UserDao userDao;
-	//private WorkshopDao workshopDao;
-	
+	private MapLayerDao mapLayerDao;
+	// private WorkshopDao workshopDao;
+
 	public UserDao getUserDao() {
 		if (userDao == null)
 			userDao = new MysqlUserDao(getJdbcTemplate());
 		return userDao;
 	}
-	
+
 	private JdbcTemplate getJdbcTemplate() {
 		if (jdbcTemplate == null) {
 			MysqlDataSource dataSource = new MysqlDataSource();
@@ -28,5 +29,12 @@ public enum DaoFactory {
 		}
 		return jdbcTemplate;
 	}
-}
 
+	public MapLayerDao getMapLayerDao() {
+		if (mapLayerDao == null) {
+			mapLayerDao = new MysqlMapLayerDao(getJdbcTemplate());
+		}
+
+		return mapLayerDao;
+	}
+}

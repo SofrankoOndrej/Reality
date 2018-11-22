@@ -7,11 +7,11 @@ import javafx.beans.property.StringProperty;
 public class UserFxModel {
 
 	private Long id;
-	StringProperty name = new SimpleStringProperty();
-	StringProperty surname = new SimpleStringProperty();
-	StringProperty email = new SimpleStringProperty();
-	StringProperty username = new SimpleStringProperty();
-	StringProperty password = new SimpleStringProperty();
+	private StringProperty name = new SimpleStringProperty();
+	private StringProperty surname = new SimpleStringProperty();
+	private StringProperty email = new SimpleStringProperty();
+	private StringProperty username = new SimpleStringProperty();
+	private StringProperty password = new SimpleStringProperty();
 	
 	public Long getId() {
 		return id;

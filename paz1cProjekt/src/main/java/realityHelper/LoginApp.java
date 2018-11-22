@@ -5,9 +5,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import controllers.LoginScreenController;
+import reality.LoginScreenController;
 
 public class LoginApp extends Application {
+	@Override
 	public void start(Stage stage) throws Exception {
 		LoginScreenController loginScreenController = new LoginScreenController();
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("LoginScreen.fxml"));
