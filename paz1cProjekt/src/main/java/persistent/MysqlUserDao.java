@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
@@ -16,8 +17,7 @@ public class MysqlUserDao implements UserDao {
 	public MysqlUserDao(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
-	
+
 	@Override
 	public void add(User user) {
 		// TODO Auto-generated method stub
@@ -34,33 +34,28 @@ public class MysqlUserDao implements UserDao {
 	public User save(User user) {
 		if (user == null)
 			return null;
-		if (user.getId() == null) { 
-			//CREATE
+		if (user.getId() == null) {
+			// CREATE
 			SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 			simpleJdbcInsert.withTableName("users");
 			simpleJdbcInsert.usingGeneratedKeyColumns("id");
-			
+
 			simpleJdbcInsert.usingColumns("name", "surname", "email", "username", "password");
-			Map<String,Object> hodnoty = new HashMap<>();
-			hodnoty.put("name",user.getName());
-			hodnoty.put("surname",user.getSurname());
-			hodnoty.put("email",user.getEmail());
-			hodnoty.put("username",user.getUsername());
-			hodnoty.put("password",user.getPassword());
-			
-			
+			Map<String, Object> hodnoty = new HashMap<>();
+			hodnoty.put("name", user.getName());
+			hodnoty.put("surname", user.getSurname());
+			hodnoty.put("email", user.getEmail());
+			hodnoty.put("username", user.getUsername());
+			hodnoty.put("password", user.getPassword());
+
 			Long id = simpleJdbcInsert.executeAndReturnKey(hodnoty).longValue();
 			user.setId(id);
-		} else { 
-			//UPDATE
-			String sql = "UPDATE workshop SET " 
-					+ "name = ? surname = ? " 
-					+ "email = ? username = ? "
-					+ "password = ? "
+		} else {
+			// UPDATE
+			String sql = "UPDATE users SET " + "name = ? surname = ? " + "email = ? username = ? " + "password = ? "
 					+ "WHERE id = ? ";
-			jdbcTemplate.update(sql,
-					user.getName(), user.getSurname(),user.getEmail(),user.getUsername(),
-					user.getPassword(),user.getId());
+			jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getEmail(), user.getUsername(),
+					user.getPassword(), user.getId());
 		}
 		return user;
 
@@ -68,8 +63,19 @@ public class MysqlUserDao implements UserDao {
 
 	@Override
 	public boolean verify(User user, String passwordHash) {
-		// TODO Auto-generated method stub
-		return false;
+		if (user.getPassword() == passwordHash) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public User getByUsername(String username) {
+		String sql = "SELECT users.username, users.password" + 
+				"FROM users" + 
+				"WHERE users.username = " + username;
+		return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class));
 	}
 
 }

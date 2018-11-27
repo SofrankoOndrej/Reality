@@ -18,6 +18,13 @@ public enum DaoFactory {
 		return userDao;
 	}
 
+	public MapLayerDao getMapLayerDao() {
+		if (mapLayerDao == null) {
+			mapLayerDao = new MysqlMapLayerDao(getJdbcTemplate());
+		}
+		return mapLayerDao;
+	}
+
 	private JdbcTemplate getJdbcTemplate() {
 		if (jdbcTemplate == null) {
 			MysqlDataSource dataSource = new MysqlDataSource();
@@ -30,11 +37,4 @@ public enum DaoFactory {
 		return jdbcTemplate;
 	}
 
-	public MapLayerDao getMapLayerDao() {
-		if (mapLayerDao == null) {
-			mapLayerDao = new MysqlMapLayerDao(getJdbcTemplate());
-		}
-
-		return mapLayerDao;
-	}
 }

@@ -12,7 +12,7 @@ public class MapLayerFxModel {
 
 	public MapLayer getMapLayer() {
 		MapLayer mapLayer = new MapLayer();
-		mapLayer.setId(id);
+		mapLayer.setId(getId());
 		mapLayer.setName(getName());
 		mapLayer.setUrl(getUrl());
 		return mapLayer;
