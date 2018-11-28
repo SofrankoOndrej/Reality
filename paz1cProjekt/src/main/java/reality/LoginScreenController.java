@@ -23,7 +23,6 @@ import persistent.UserDao;
 public class LoginScreenController {
 
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
-	private User user;
 	private UserFxModel createdUserModel;
 
 	@FXML
@@ -42,10 +41,7 @@ public class LoginScreenController {
 	private Button resetpasswordButton;
 
 	@FXML
-	private Label wronginputTextlabel;
-	
-	@FXML
-    private Label wrongPasswordOrUsernameLabel;
+	private Label wrongPasswordOrUsernameLabel;
 
 	public LoginScreenController() {
 		userDao = DaoFactory.INSTANCE.getUserDao();
@@ -61,39 +57,43 @@ public class LoginScreenController {
 			@Override
 			public void handle(ActionEvent event) {
 				// select z databazy podla uzivatelskeho mena
-				userDao.getByUsername(createdUserModel.getUsername());
+				User user2login = userDao.getByUsername(createdUserModel.getUsername());
+				if (user2login != null) {
+					// BCrypt overenie hesla
+					String pwHash = user2login.getPassword();
+					boolean ok = BCrypt.checkpw(createdUserModel.getPassword(), pwHash);
 
-				//				User user2login = ;
-				//				String pwHash = ;
-				
-				
-				// BCrypt overenie hesla
-				boolean ok = BCrypt.checkpw(createdUserModel.getPassword(), pwHash);
+					// nacitanie uvitacieho zobrazenia aplikacie alebo chybova hlaska
+					if (ok) {
+						try {
+							wrongPasswordOrUsernameLabel.setVisible(false);
+							FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
+							CreateMainAppController createMainApp = new CreateMainAppController();
+							fxmlLoader.setController(createMainApp);
+							Parent rootPane = fxmlLoader.load();
+							Scene scene = new Scene(rootPane);
 
-				// nacitanie uvitacieho zobrazenia aplikacie alebo chybova hlaska
-				if (ok) {
-
-					try {
-						FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
-						CreateMainAppController createMainApp = new CreateMainAppController();
-						fxmlLoader.setController(createMainApp);
-						Parent rootPane = fxmlLoader.load();
-						Scene scene = new Scene(rootPane);
-
-						Stage dialog = new Stage();
-						dialog.setScene(scene);
-						dialog.show();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+							Stage dialog = new Stage();
+							dialog.setScene(scene);
+							dialog.show();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						// zavretie login okna
+						signinButton.getScene().getWindow().hide();
+					} else { // wrong password
+						wrongPasswordOrUsernameLabel.setVisible(true);
+						wrongPasswordOrUsernameLabel.setText("Wrong pasword!");;
+						passwordTextfield.setText("");
 					}
-					// zavretie login okna
-					signinButton.getScene().getWindow().hide();
-				}else {
-					wrongPasswordOrUsernameLabel.setDisable(false);
+				} else { // wrong username - null result from database
+					wrongPasswordOrUsernameLabel.setVisible(true);
+					wrongPasswordOrUsernameLabel.setText("Wrong username!");;
+					usernameTextfield.setText("");
+					passwordTextfield.setText("");
 				}
 			}
-
 		});
 
 		signupButton.setOnAction(new EventHandler<ActionEvent>() {

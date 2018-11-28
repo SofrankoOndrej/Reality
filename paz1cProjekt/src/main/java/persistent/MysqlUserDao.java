@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import com.mysql.cj.protocol.Resultset;
+
 import entities.User;
 
 public class MysqlUserDao implements UserDao {
@@ -72,9 +74,11 @@ public class MysqlUserDao implements UserDao {
 
 	@Override
 	public User getByUsername(String username) {
-		String sql = "SELECT users.username, users.password" + 
-				"FROM users" + 
-				"WHERE users.username = " + username;
+		String sql = "SELECT users.username, users.password " + 
+				"FROM users " + 
+				"WHERE users.username = '" + username + "'";
+		// osetrit pripad ked 
+		
 		return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class));
 	}
 

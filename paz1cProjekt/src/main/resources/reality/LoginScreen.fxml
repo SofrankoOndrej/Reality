@@ -21,8 +21,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="wronginputTextlabel" layoutX="18.0" layoutY="243.0" prefHeight="15.0" prefWidth="191.0" text="Password or username is incorrect." textFill="RED" visible="false" />
-      <Label fx:id="wrongPasswordOrUsernameLabel" alignment="CENTER" disable="true" layoutX="14.0" layoutY="235.0" prefHeight="17.0" prefWidth="200.0" text="Wrong username or password!" textFill="RED">
+      <Label fx:id="wrongPasswordOrUsernameLabel" alignment="CENTER" layoutX="14.0" layoutY="235.0" prefHeight="17.0" prefWidth="200.0" text="Wrong username or password!" textFill="RED" visible="false">
          <font>
             <Font size="14.0" />
          </font>
