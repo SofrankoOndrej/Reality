@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -74,12 +76,18 @@ public class MysqlUserDao implements UserDao {
 
 	@Override
 	public User getByUsername(String username) {
-		String sql = "SELECT users.username, users.password " + 
-				"FROM users " + 
-				"WHERE users.username = '" + username + "'";
-		// osetrit pripad ked 
-		
-		return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class));
+		String sql = "SELECT users.username, users.password " + "FROM users " + "WHERE users.username = '" + username
+				+ "'";
+		// osetrit pripad ked
+		User user;
+		try {
+			user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class));
+			return user;
+		} catch (EmptyResultDataAccessException e) {
+			//e.printStackTrace();
+			return null;
+		}
+
 	}
 
 }

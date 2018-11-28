@@ -11,11 +11,12 @@
    <children>
       <Label layoutX="19.0" layoutY="70.0" text="Username or e-mail:" />
       <Label layoutX="19.0" layoutY="119.0" text="Password:" />
-      <PasswordField fx:id="passwordTextfield" alignment="CENTER" layoutX="19.0" layoutY="136.0" prefHeight="25.0" prefWidth="191.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+      
       <TextField fx:id="usernameTextfield" alignment="CENTER" layoutX="19.0" layoutY="90.0" prefHeight="25.0" prefWidth="191.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+      <PasswordField fx:id="passwordTextfield" alignment="CENTER" layoutX="19.0" layoutY="136.0" prefHeight="25.0" prefWidth="191.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
       <Button fx:id="signinButton" layoutX="21.0" layoutY="173.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Sign in" AnchorPane.leftAnchor="10.0" />
-      <Button fx:id="signupButton" layoutX="75.0" layoutY="205.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Sign up" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
       <Button fx:id="resetpasswordButton" layoutX="10.0" layoutY="173.0" mnemonicParsing="false" text="Forgot password?" AnchorPane.rightAnchor="10.0" />
+      <Button fx:id="signupButton" layoutX="75.0" layoutY="205.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Sign up" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="73.0" layoutY="29.0" snapToPixel="false" text="Welcome!">
          <font>
             <Font size="18.0" />
