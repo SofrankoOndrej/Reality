@@ -1,7 +1,6 @@
 package persistent;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 public enum DaoFactory {
@@ -10,7 +9,6 @@ public enum DaoFactory {
 	private JdbcTemplate jdbcTemplate;
 	private UserDao userDao;
 	private MapLayerDao mapLayerDao;
-	// private WorkshopDao workshopDao;
 
 	public UserDao getUserDao() {
 		if (userDao == null)

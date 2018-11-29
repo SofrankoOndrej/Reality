@@ -1,9 +1,6 @@
 package reality;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -48,18 +45,22 @@ public class CreateUserController {
 		usernameTextfield.textProperty().bindBidirectional(createdUserModel.usernameProperty());
 		passwordTextfield.textProperty().bindBidirectional(createdUserModel.passwordProperty());
 
-		createuserButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				System.out.println(createdUserModel.toString());
-				// vytvorenie hash hesla
-				String salt = BCrypt.gensalt();
-				String pwHash = BCrypt.hashpw(createdUserModel.getPassword(), salt);
-				createdUserModel.setPassword(pwHash);
-				// ulozenie pouzivatela
-				userDao.save(createdUserModel.getUser());
-				createuserButton.getScene().getWindow().hide();
-			}
+		createuserButton.setOnAction(actionEvent -> {
+			System.out.println(createdUserModel.toString());
+			// vytvorenie hashu hesla
+			String salt = BCrypt.gensalt();
+			String pwHash = BCrypt.hashpw(createdUserModel.getPassword(), salt);
+			createdUserModel.setPassword(pwHash);
+
+			// over dostupnost pouzivatelskeho mena
+
+			// over ci je pouzita dana mailova adresa
+
+			// over konzistentnost pouzivatela
+
+			// ulozenie pouzivatela
+			userDao.save(createdUserModel.getUser());
+			createuserButton.getScene().getWindow().hide();
 		});
 
 	}

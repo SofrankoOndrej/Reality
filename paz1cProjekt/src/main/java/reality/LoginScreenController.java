@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import entities.User;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -53,56 +51,52 @@ public class LoginScreenController {
 		usernameTextfield.textProperty().bindBidirectional(createdUserModel.usernameProperty());
 		passwordTextfield.textProperty().bindBidirectional(createdUserModel.passwordProperty());
 
-		signinButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				// select z databazy podla uzivatelskeho mena
-				User user2login = userDao.getByUsername(createdUserModel.getUsername());
-				if (user2login != null) {
-					// BCrypt overenie hesla
-					String pwHash = user2login.getPassword();
-					boolean ok = BCrypt.checkpw(createdUserModel.getPassword(), pwHash);
+		signinButton.setOnAction(actionEvent -> {
+			// select z databazy podla uzivatelskeho mena
+			User user2login = userDao.getByUsername(createdUserModel.getUsername());
+			if (user2login != null) {
+				// BCrypt overenie hesla
+				String pwHash = user2login.getPassword();
+				boolean ok = BCrypt.checkpw(createdUserModel.getPassword(), pwHash);
 
-					// nacitanie uvitacieho zobrazenia aplikacie alebo chybova hlaska
-					if (ok) {
-						try {
-							wrongPasswordOrUsernameLabel.setVisible(false);
-							FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
-							CreateMainAppController createMainApp = new CreateMainAppController();
-							fxmlLoader.setController(createMainApp);
-							Parent rootPane = fxmlLoader.load();
-							Scene scene = new Scene(rootPane);
+				// nacitanie uvitacieho zobrazenia aplikacie alebo chybova hlaska
+				if (ok) {
+					try { // nacitaj hlavne okno aplikacie
+						wrongPasswordOrUsernameLabel.setVisible(false);
+						FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
+						CreateMainAppController createMainApp = new CreateMainAppController();
+						fxmlLoader.setController(createMainApp);
+						Parent rootPane = fxmlLoader.load();
+						Scene scene = new Scene(rootPane);
 
-							Stage dialog = new Stage();
-							dialog.setScene(scene);
-							dialog.show();
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						// zavretie login okna
-						signinButton.getScene().getWindow().hide();
-					} else { // wrong password
-						wrongPasswordOrUsernameLabel.setVisible(true);
-						wrongPasswordOrUsernameLabel.setText("Wrong pasword!");;
-						passwordTextfield.setText("");
+						Stage mainAppStage = new Stage();
+						mainAppStage.setScene(scene);
+						mainAppStage.show();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				} else { // wrong username - null result from database
+					// zavretie login okna
+					signinButton.getScene().getWindow().hide();
+				} else { // wrong password - zlyhalo overenie hashu hesla
 					wrongPasswordOrUsernameLabel.setVisible(true);
-					wrongPasswordOrUsernameLabel.setText("Wrong username!");;
-					usernameTextfield.setText("");
+					wrongPasswordOrUsernameLabel.setText("Wrong pasword!");
+					;
 					passwordTextfield.setText("");
 				}
+			} else { // wrong username - null result from database
+				wrongPasswordOrUsernameLabel.setVisible(true);
+				wrongPasswordOrUsernameLabel.setText("Wrong username!");
+				;
+				usernameTextfield.setText("");
+				passwordTextfield.setText("");
 			}
+
 		});
 
-		signupButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				CreateUserController createUserController = new CreateUserController();
-				showModalWindow(createUserController, "CreateUser.fxml");
-			}
-
+		signupButton.setOnAction(actionEvent -> {
+			CreateUserController createUserController = new CreateUserController();
+			showModalWindow(createUserController, "CreateUser.fxml");
 		});
 
 	}
