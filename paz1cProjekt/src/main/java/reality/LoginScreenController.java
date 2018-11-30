@@ -49,15 +49,15 @@ public class LoginScreenController {
 		// UserModel je len s loginom a heslom
 		usernameTextfield.textProperty().bindBidirectional(createdUserModel.usernameProperty());
 		passwordTextfield.textProperty().bindBidirectional(createdUserModel.passwordProperty());
-		
+
 		signinButton.setOnAction(ActionEvent -> {
-			// select z databazy podla uzivatelskeho mena, 
+			// select z databazy podla uzivatelskeho mena,
 			User user2login = userDao.getByUsername(createdUserModel.getUsername());
 			if (user2login != null) {
 				// BCrypt overenie hesla
 				String pwHash = user2login.getPassword();
 				boolean ok = BCrypt.checkpw(createdUserModel.getPassword(), pwHash);
-				
+
 				// nacitanie uvitacieho zobrazenia aplikacie alebo chybova hlaska
 				if (ok) {
 					wrongPasswordOrUsernameLabel.setVisible(false);
@@ -66,8 +66,10 @@ public class LoginScreenController {
 					createdUserModel.setUser(userDao.getByUsernameFull(createdUserModel.getUsername()));
 					try { // nacitaj hlavne okno aplikacie
 						FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
-						MainAppController createMainApp = new MainAppController();
-						fxmlLoader.setController(createMainApp);
+						// mainApp controler s USERom
+						MainAppController createMainAppController = new MainAppController(
+								userDao.getByUsernameFull(createdUserModel.getUsername()));
+						fxmlLoader.setController(createMainAppController);
 						Parent rootPane = fxmlLoader.load();
 						Scene scene = new Scene(rootPane);
 
@@ -82,14 +84,14 @@ public class LoginScreenController {
 					signinButton.getScene().getWindow().hide();
 				} else { // wrong password - zlyhalo overenie hashu hesla
 					wrongPasswordOrUsernameLabel.setVisible(true);
-					wrongPasswordOrUsernameLabel.setText("Wrong pasword!");
+					wrongPasswordOrUsernameLabel.setText("Wrong password!");
 					;
 					passwordTextfield.setText("");
 				}
 			} else { // wrong username - null result from database
 				wrongPasswordOrUsernameLabel.setVisible(true);
 				wrongPasswordOrUsernameLabel.setText("Wrong username!");
-				
+
 				usernameTextfield.setText("");
 				passwordTextfield.setText("");
 			}

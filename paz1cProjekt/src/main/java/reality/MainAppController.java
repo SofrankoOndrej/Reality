@@ -1,5 +1,6 @@
 package reality;
 
+import entities.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -12,6 +13,7 @@ public class MainAppController {
 
 	private MapLayerDao mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
 	private MapLayerFxModel MapLayerModel;
+	private UserFxModel userModel;
 
 	@FXML
 	private Button changeMapLayerButton;
@@ -37,6 +39,12 @@ public class MainAppController {
 	public MainAppController() {
 		mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
 		MapLayerModel = new MapLayerFxModel();
+	}
+	
+	public MainAppController(User user) {
+		mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
+		MapLayerModel = new MapLayerFxModel();
+		userModel.setUser(user);		
 	}
 
 	@FXML
