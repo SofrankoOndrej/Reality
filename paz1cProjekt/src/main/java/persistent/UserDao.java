@@ -12,8 +12,19 @@ public interface UserDao {
 
 	User save(User user);
 
-	boolean verify(User user, String passwordHash);
-
+	/**
+	 * Method used for validation of user
+	 * 
+	 * @param username
+	 * @return
+	 */
 	User getByUsername(String username);
+	
+	/**
+	 * Method used to return full user after validation
+	 * @param username
+	 * @return
+	 */
+	User getByUsernameFull(String username);
 
 }

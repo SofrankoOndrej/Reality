@@ -10,7 +10,7 @@ public class MainApp extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		CreateMainAppController createMainAppController = new CreateMainAppController();
+		MainAppController createMainAppController = new MainAppController();
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
 		fxmlLoader.setController(createMainAppController);
 

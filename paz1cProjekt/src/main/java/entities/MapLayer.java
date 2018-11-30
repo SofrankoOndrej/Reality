@@ -5,6 +5,15 @@ public class MapLayer {
 	private Long id;
 	private String name;
 	private String url;
+	private String sampleTileUrl;
+
+	public String getSampleTileUrl() {
+		return sampleTileUrl;
+	}
+
+	public void setSampleTileUrl(String sampleTileUrl) {
+		this.sampleTileUrl = sampleTileUrl;
+	}
 
 	public String getUrl() {
 		return url;
@@ -32,6 +41,7 @@ public class MapLayer {
 
 	@Override
 	public String toString() {
-		return "Map layer: [id: " + getId() + ", name: " + getName() + "URL: " + url.toString() +  " ]";
+		return "Map layer: [id: " + getId() + ", name: " + getName() + "URL: " + getUrl() + "Sample Tile URL: "
+				+ getSampleTileUrl() + " ]";
 	}
 }

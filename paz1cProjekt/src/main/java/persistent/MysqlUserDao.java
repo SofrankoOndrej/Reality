@@ -62,29 +62,38 @@ public class MysqlUserDao implements UserDao {
 
 	}
 
-	@Override
-	public boolean verify(User user, String passwordHash) {
-		if (user.getPassword() == passwordHash) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
+	
+	/**
+	 * returns user with only USERNAME and PWHASH
+	 */
 	@Override
 	public User getByUsername(String username) {
 		String sql = "SELECT users.username, users.password " + "FROM users " + "WHERE users.username = '" + username
 				+ "'";
-		// osetrit pripad ked
 		User user;
 		try {
 			user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class));
 			return user;
 		} catch (EmptyResultDataAccessException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			return null;
 		}
-
 	}
-
+	
+	/**
+	 * returns full USER
+	 */
+	@Override
+	public User getByUsernameFull(String username) {
+		String sql = "SELECT users.id, users.name, users.surname, users.email, users.username, users.password " + "FROM users " + "WHERE users.username = '" + username
+				+ "'";
+		User user;
+		try {
+			user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class));
+			return user;
+		} catch (EmptyResultDataAccessException e) {
+			// e.printStackTrace();
+			return null;
+		}
+	}
 }

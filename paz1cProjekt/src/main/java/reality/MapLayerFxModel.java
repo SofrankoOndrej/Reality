@@ -8,7 +8,8 @@ public class MapLayerFxModel {
 
 	private Long id;
 	private StringProperty name = new SimpleStringProperty();
-	private StringProperty url = new SimpleStringProperty();
+	private StringProperty mapServerUrl = new SimpleStringProperty();
+	private StringProperty sampleTileUrl = new SimpleStringProperty();
 
 	public MapLayer getMapLayer() {
 		MapLayer mapLayer = new MapLayer();
@@ -42,12 +43,24 @@ public class MapLayerFxModel {
 	}
 	
 	public String getUrl() {
-		return url.get();
+		return mapServerUrl.get();
 	}
 	public void setUrl(String url) {
-		this.url.set(url);
+		this.mapServerUrl.set(url);
 	}
-	public StringProperty urlProperty() {
-		return url;
+	public StringProperty mapServerUrlProperty() {
+		return mapServerUrl;
+	}
+
+	public String getSampleTileUrl() {
+		return sampleTileUrl.get();
+	}
+
+	public void setSampleTileUrl(String sampleTileUrl) {
+		this.sampleTileUrl.set(sampleTileUrl);
+	}
+	
+	public StringProperty sampleTileUrlProperty() {
+		return sampleTileUrl;
 	}
 }

@@ -1,10 +1,7 @@
 package reality;
 
 import java.io.IOException;
-
 import org.springframework.security.crypto.bcrypt.BCrypt;
-
-import entities.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,6 +14,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import persistent.DaoFactory;
 import persistent.UserDao;
+import entities.User;
 
 public class LoginScreenController {
 
@@ -48,23 +46,27 @@ public class LoginScreenController {
 
 	@FXML
 	void initialize() {
+		// UserModel je len s loginom a heslom
 		usernameTextfield.textProperty().bindBidirectional(createdUserModel.usernameProperty());
 		passwordTextfield.textProperty().bindBidirectional(createdUserModel.passwordProperty());
-
-		signinButton.setOnAction(actionEvent -> {
-			// select z databazy podla uzivatelskeho mena
+		
+		signinButton.setOnAction(ActionEvent -> {
+			// select z databazy podla uzivatelskeho mena, 
 			User user2login = userDao.getByUsername(createdUserModel.getUsername());
 			if (user2login != null) {
 				// BCrypt overenie hesla
 				String pwHash = user2login.getPassword();
 				boolean ok = BCrypt.checkpw(createdUserModel.getPassword(), pwHash);
-
+				
 				// nacitanie uvitacieho zobrazenia aplikacie alebo chybova hlaska
 				if (ok) {
+					wrongPasswordOrUsernameLabel.setVisible(false);
+
+					// napln UserModel datami z databazy
+					createdUserModel.setUser(userDao.getByUsernameFull(createdUserModel.getUsername()));
 					try { // nacitaj hlavne okno aplikacie
-						wrongPasswordOrUsernameLabel.setVisible(false);
 						FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
-						CreateMainAppController createMainApp = new CreateMainAppController();
+						MainAppController createMainApp = new MainAppController();
 						fxmlLoader.setController(createMainApp);
 						Parent rootPane = fxmlLoader.load();
 						Scene scene = new Scene(rootPane);
@@ -87,7 +89,7 @@ public class LoginScreenController {
 			} else { // wrong username - null result from database
 				wrongPasswordOrUsernameLabel.setVisible(true);
 				wrongPasswordOrUsernameLabel.setText("Wrong username!");
-				;
+				
 				usernameTextfield.setText("");
 				passwordTextfield.setText("");
 			}
