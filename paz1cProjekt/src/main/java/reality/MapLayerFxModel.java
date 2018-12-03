@@ -16,13 +16,15 @@ public class MapLayerFxModel {
 		mapLayer.setId(getId());
 		mapLayer.setName(getName());
 		mapLayer.setUrl(getUrl());
+		mapLayer.setSampleTileUrl(getSampleTileUrl());
 		return mapLayer;
 	}
 	
 	public void setMapLayer(MapLayer mapLayer) {
-		setId(mapLayer.getId());
-		setName(mapLayer.getName());
-		setUrl(mapLayer.getUrl());
+		this.setId(mapLayer.getId());
+		this.setName(mapLayer.getName());
+		this.setUrl(mapLayer.getUrl());
+		this.setSampleTileUrl(mapLayer.getSampleTileUrl());
 	}
 	
 	public Long getId() {

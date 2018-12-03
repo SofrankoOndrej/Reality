@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 public enum DaoFactory {
+	// nazov instancie
 	INSTANCE;
 
 	private JdbcTemplate jdbcTemplate;

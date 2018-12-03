@@ -62,7 +62,6 @@ public class MysqlUserDao implements UserDao {
 
 	}
 
-	
 	/**
 	 * returns user with only USERNAME and PWHASH
 	 */
@@ -79,14 +78,14 @@ public class MysqlUserDao implements UserDao {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * returns full USER
 	 */
 	@Override
 	public User getByUsernameFull(String username) {
-		String sql = "SELECT users.id, users.name, users.surname, users.email, users.username, users.password " + "FROM users " + "WHERE users.username = '" + username
-				+ "'";
+		String sql = "SELECT users.id, users.name, users.surname, users.email, users.username, users.password "
+				+ "FROM users " + "WHERE users.username = '" + username + "'";
 		User user;
 		try {
 			user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class));

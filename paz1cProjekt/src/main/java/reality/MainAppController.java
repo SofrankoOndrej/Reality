@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import persistent.DaoFactory;
 import persistent.MapLayerDao;
+import util.Utils;
 
 public class MainAppController {
 
@@ -40,11 +41,11 @@ public class MainAppController {
 		mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
 		MapLayerModel = new MapLayerFxModel();
 	}
-	
-	public MainAppController(User user) {
+
+	public MainAppController(UserFxModel userModel) {
 		mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
 		MapLayerModel = new MapLayerFxModel();
-		userModel.setUser(user);		
+		this.userModel = userModel;
 	}
 
 	@FXML
@@ -56,10 +57,14 @@ public class MainAppController {
 
 		previewMapTileButton.setOnAction(actionEvent -> {
 			// validate url string
+			if (Utils.isValidURL(MapLayerModel.getSampleTileUrl())) {
+				Image tileImage = new Image(MapLayerModel.getSampleTileUrl());
+				TilePreviewImageView.setImage(tileImage);
+				MapLayerModel.setUrl(Utils.parseUrl2UrlMapBaseFormat(MapLayerModel.getSampleTileUrl()));
+			} else {
+				inputUrlTextField.setText("Please enter valid URL string");
+			}
 
-			// BufferedImage img = ImageIO.read(new URL(inputUrlTextField.getText()));
-			Image tileImage = new Image(inputUrlTextField.getText());
-			TilePreviewImageView.setImage(tileImage);
 		});
 
 		saveMapLayerButton.setOnAction(actionEvent -> {
@@ -67,7 +72,7 @@ public class MainAppController {
 
 			// parse url to basemap format
 
-			mapLayerDao.save(MapLayerModel.getMapLayer());
+			mapLayerDao.save(MapLayerModel.getMapLayer(), userModel.getUser());
 
 		});
 

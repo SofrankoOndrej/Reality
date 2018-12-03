@@ -67,8 +67,7 @@ public class LoginScreenController {
 					try { // nacitaj hlavne okno aplikacie
 						FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
 						// mainApp controler s USERom
-						MainAppController createMainAppController = new MainAppController(
-								userDao.getByUsernameFull(createdUserModel.getUsername()));
+						MainAppController createMainAppController = new MainAppController(createdUserModel);
 						fxmlLoader.setController(createMainAppController);
 						Parent rootPane = fxmlLoader.load();
 						Scene scene = new Scene(rootPane);

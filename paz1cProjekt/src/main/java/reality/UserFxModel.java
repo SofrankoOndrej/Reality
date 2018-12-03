@@ -24,7 +24,7 @@ public class UserFxModel {
 		return name.get();
 	}
 	public void setName(String name) {
-		this.name.set(name);;
+		this.name.set(name);
 	}
 	public StringProperty nameProperty() {
 		return name;
@@ -34,7 +34,7 @@ public class UserFxModel {
 		return surname.get();
 	}
 	public void setSurname(String surname) {
-		this.surname.set(surname);;
+		this.surname.set(surname);
 	}
 	public StringProperty surnameProperty() {
 		return surname;
@@ -44,7 +44,7 @@ public class UserFxModel {
 		return email.get();
 	}
 	public void setEmail(String email) {
-		this.email.set(email);;
+		this.email.set(email);
 	}
 	public StringProperty emailProperty() {
 		return email;
@@ -54,7 +54,7 @@ public class UserFxModel {
 		return username.get();
 	}
 	public void setUsername(String username) {
-		this.username.set(username);;
+		this.username.set(username);
 	}
 	public StringProperty usernameProperty() {
 		return username;
@@ -64,7 +64,7 @@ public class UserFxModel {
 		return password.get();
 	}
 	public void setPassword(String password) {
-		this.password.set(password);;
+		this.password.set(password);
 	}
 	public StringProperty passwordProperty() {
 		return password;
@@ -72,12 +72,12 @@ public class UserFxModel {
 	
 	public User getUser() {
 		User user = new User();
-		user.setId(getId());
-		user.setName(getName());
-		user.setSurname(getSurname());
-		user.setEmail(getEmail());
-		user.setUsername(getUsername());
-		user.setPassword(getPassword());
+		user.setId(this.getId());
+		user.setName(this.getName());
+		user.setSurname(this.getSurname());
+		user.setEmail(this.getEmail());
+		user.setUsername(this.getUsername());
+		user.setPassword(this.getPassword());
 		
 		return user;
 	}

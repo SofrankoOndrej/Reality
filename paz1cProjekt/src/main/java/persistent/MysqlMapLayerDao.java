@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import entities.MapLayer;
+import entities.User;
 
 public class MysqlMapLayerDao implements MapLayerDao {
 
@@ -28,7 +29,7 @@ public class MysqlMapLayerDao implements MapLayerDao {
 	}
 
 	@Override
-	public MapLayer save(MapLayer mapLayer) {
+	public MapLayer save(MapLayer mapLayer, User user) {
 		if (mapLayer == null)
 			return null;
 		if (mapLayer.getId() == null) {
@@ -42,6 +43,8 @@ public class MysqlMapLayerDao implements MapLayerDao {
 			hodnoty.put("name", mapLayer.getName());
 			hodnoty.put("sampleTileUrl", mapLayer.getSampleTileUrl());
 			hodnoty.put("mapServerUrl", mapLayer.getUrl());
+			hodnoty.put("users_id", user.getId());
+
 			// hodnoty.put("users_id", user.getId());
 
 			Long id = simpleJdbcInsert.executeAndReturnKey(hodnoty).longValue();
@@ -54,7 +57,5 @@ public class MysqlMapLayerDao implements MapLayerDao {
 		}
 		return mapLayer;
 	}
-	
-	
 
 }
