@@ -67,14 +67,15 @@ public class LoginScreenController {
 					try { // nacitaj hlavne okno aplikacie
 						FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainApp.fxml"));
 						// mainApp controler s USERom
-						MainAppController createMainAppController = new MainAppController(createdUserModel);
-						fxmlLoader.setController(createMainAppController);
+						MainAppController mainAppController = new MainAppController(createdUserModel);
+						fxmlLoader.setController(mainAppController);
 						Parent rootPane = fxmlLoader.load();
 						Scene scene = new Scene(rootPane);
-
+						
 						Stage mainAppStage = new Stage();
 						mainAppStage.setScene(scene);
 						mainAppStage.show();
+						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
