@@ -8,6 +8,7 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
+	private Double[][] lastBoundingBox;
 
 	public String getUsername() {
 		return username;
@@ -57,10 +58,18 @@ public class User {
 		this.id = id;
 	}
 
+	public Double[][] getLastBoundingBox() {
+		return lastBoundingBox;
+	}
+
+	public void setLastBoundingBox(Double[][] lastBoundingBox) {
+		this.lastBoundingBox = lastBoundingBox;
+	}
+
 	@Override
 	public String toString() {
-		return "User: [id: " + getId() + ", name: " + getName() + ", surname: " + getSurname() + ", email: " + getEmail()
-				+ ", username: " + getUsername() + " ]";
+		return "User: [id: " + getId() + ", name: " + getName() + ", surname: " + getSurname() + ", email: "
+				+ getEmail() + ", username: " + getUsername() + " ]";
 	}
 
 }

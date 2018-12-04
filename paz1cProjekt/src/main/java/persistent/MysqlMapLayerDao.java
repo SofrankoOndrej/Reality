@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import entities.MapLayer;
 import entities.User;
+import javafx.scene.image.Image;
 
 public class MysqlMapLayerDao implements MapLayerDao {
 
@@ -56,6 +57,18 @@ public class MysqlMapLayerDao implements MapLayerDao {
 					mapLayer.getId());
 		}
 		return mapLayer;
+	}
+
+	@Override
+	public Image getImage(MapLayer mapLayer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Image getThumbnail(MapLayer mapLayer) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

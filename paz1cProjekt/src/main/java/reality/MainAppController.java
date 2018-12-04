@@ -117,11 +117,14 @@ public class MainAppController {
 	private void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
 		// get bounding box
+//		userModel.
 
 		// determine what tiles you need
 		// get map tiles
 		// construct map
+		
 		// draw map
+		
 		mapCanvas.setViewOrder(1);
 		gc.setFill(Color.GREEN);
 		gc.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
