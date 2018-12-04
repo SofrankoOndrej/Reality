@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,6 +29,12 @@ public class MainAppController {
 
 	@FXML
 	private Button changeMapLayerButton;
+
+	@FXML
+	private ScrollPane layersScrollPane;
+
+	@FXML
+	private AnchorPane layersAnchorPane;
 
 	@FXML
 	private ImageView TilePreviewImageView;
@@ -63,15 +70,13 @@ public class MainAppController {
 		// automatic resize of canvas
 		mapCanvas.widthProperty().bind(mapAnchorPane.widthProperty());
 		mapCanvas.heightProperty().bind(mapAnchorPane.heightProperty());
-		this.drawInCanvas();
-		
+
 		// listener zmeny velkosti canvas
 		mapCanvas.widthProperty().addListener(observable -> redrawMap());
 		mapCanvas.heightProperty().addListener(observable -> redrawMap());
-		
-		// mapLayer binding to model
-		mapNameTextField.textProperty().bindBidirectional(MapLayerModel.nameProperty());
 
+		// mapLayer binding to map model
+		mapNameTextField.textProperty().bindBidirectional(MapLayerModel.nameProperty());
 		inputUrlTextField.textProperty().bindBidirectional(MapLayerModel.sampleTileUrlProperty());
 		mapServerUrlTextField.textProperty().bindBidirectional(MapLayerModel.mapServerUrlProperty());
 
@@ -85,6 +90,17 @@ public class MainAppController {
 			} else {
 				inputUrlTextField.setText("Please enter valid URL string");
 			}
+		});
+
+		// change layers
+		changeMapLayerButton.setOnAction(actionEvent -> {
+			if (layersScrollPane.isVisible()) {
+				layersScrollPane.setVisible(false);
+			} else {
+				layersScrollPane.setVisible(true);
+				// zobraz ikonky mapovych vrstiev
+				
+			}
 
 		});
 
@@ -95,25 +111,27 @@ public class MainAppController {
 			// parse url to basemap format
 
 			mapLayerDao.save(MapLayerModel.getMapLayer(), userModel.getUser());
-
 		});
-
 	}
 
 	private void redrawMap() {
+		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
 		// get bounding box
+
+		// determine what tiles you need
 		// get map tiles
 		// construct map
 		// draw map
-		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
+		mapCanvas.setViewOrder(1);
 		gc.setFill(Color.GREEN);
+		gc.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
 	}
-	
-	
+
 	public void drawInCanvas() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
 		gc.setFill(Color.GREEN);
-		
+		gc.fillRect(10, 10, mapCanvas.getWidth() - 20, mapCanvas.getHeight() - 20);
+
 	}
 
 }
