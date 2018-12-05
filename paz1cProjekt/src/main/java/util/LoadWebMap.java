@@ -1,14 +1,17 @@
 package util;
 
+import java.util.List;
+
 import entities.MapLayer;
+import entities.Tile;
 import javafx.scene.image.Image;
 
 public class LoadWebMap implements Map {
 
 	@Override
-	public Image getTile(MapLayer mapLayer, int[][] tileNumbers, int zoomLevel) {
+	public Image getTile(MapLayer mapLayer, Tile tile) {
 		// sprav URL pola typu mapy
-		String constructedUrl = MapUtils.constructUrl(mapLayer, tileNumbers, zoomLevel);
+		String constructedUrl = MapUtils.constructUrl(mapLayer, tile);
 		Image tileImage = new Image(constructedUrl);
 		return tileImage;
 	}
@@ -16,20 +19,16 @@ public class LoadWebMap implements Map {
 	@Override
 	public Image loadMapLayer(MapLayer mapLayer, Double[][] boundingBox, int zoomLevel) {
 		// get tile numbers
-		int[][] tiles = MapUtils.getTilesNumbersFromBoundingBox(boundingBox);
+		List<Tile> tiles = MapUtils.getTilesNumbersFromBoundingBox(boundingBox, zoomLevel);
 		// download tiles
-		for (int row = 0; row < tiles.length; row++) {
-			for (int col = 0; col < tiles[row].length; col++) {
-				// construct image
-
-			}
+		for (Tile tile: tiles) {
+			
+			// construct image
+			
+			
 		}
 
-//		for (int row = 0; row < array1.length; row++) {
-//	    for (int col = 0; col < array1[row].length; col++) {
-//	        array2[row][col] = array1[row][col];
-//	    }
-//	}
+
 
 		return null;
 	}

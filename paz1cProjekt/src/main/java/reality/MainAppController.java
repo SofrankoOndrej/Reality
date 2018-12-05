@@ -99,9 +99,8 @@ public class MainAppController {
 			} else {
 				layersScrollPane.setVisible(true);
 				// zobraz ikonky mapovych vrstiev
-				
-			}
 
+			}
 		});
 
 		// save mapLayer to data storage
@@ -122,9 +121,9 @@ public class MainAppController {
 		// determine what tiles you need
 		// get map tiles
 		// construct map
-		
+
 		// draw map
-		
+
 		mapCanvas.setViewOrder(1);
 		gc.setFill(Color.GREEN);
 		gc.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());

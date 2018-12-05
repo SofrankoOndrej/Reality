@@ -2,6 +2,8 @@ package util;
 
 import java.net.URL;
 
+import entities.Tile;
+
 public class Utils {
 
 	/* Returns true if url is valid */
@@ -28,5 +30,10 @@ public class Utils {
 		}
 
 		return sb.toString();
+	}
+	
+	public static boolean downloadTile(Tile tile, String cacheFolderPath) {
+		
+		return false;
 	}
 }

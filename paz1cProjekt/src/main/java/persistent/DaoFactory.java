@@ -10,6 +10,7 @@ public enum DaoFactory {
 	private JdbcTemplate jdbcTemplate;
 	private UserDao userDao;
 	private MapLayerDao mapLayerDao;
+	private TileDao tileDao;
 
 	public UserDao getUserDao() {
 		if (userDao == null)
@@ -23,7 +24,14 @@ public enum DaoFactory {
 		}
 		return mapLayerDao;
 	}
-
+	
+	public TileDao getTileDao() {
+		if(tileDao == null) {
+			tileDao = new MysqlTileDao(getJdbcTemplate());
+		}
+		return tileDao;
+	}
+	
 	private JdbcTemplate getJdbcTemplate() {
 		if (jdbcTemplate == null) {
 			MysqlDataSource dataSource = new MysqlDataSource();
