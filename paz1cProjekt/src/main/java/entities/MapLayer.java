@@ -6,6 +6,8 @@ public class MapLayer {
 	private String name;
 	private String url;
 	private String sampleTileUrl;
+	private String cacheFolderPath;
+	private String tileUrlFormat;
 
 	public String getSampleTileUrl() {
 		return sampleTileUrl;
@@ -37,6 +39,22 @@ public class MapLayer {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getCacheFolderPath() {
+		return cacheFolderPath;
+	}
+
+	public void setCacheFolderPath(String cacheFolderPath) {
+		this.cacheFolderPath = cacheFolderPath;
+	}
+
+	public String getTileUrlFormat() {
+		return tileUrlFormat;
+	}
+
+	public void setTileUrlFormat(String tileUrlFormat) {
+		this.tileUrlFormat = tileUrlFormat;
 	}
 
 	@Override

@@ -32,8 +32,5 @@ public class Utils {
 		return sb.toString();
 	}
 	
-	public static boolean downloadTile(Tile tile, String cacheFolderPath) {
-		
-		return false;
-	}
+	
 }
