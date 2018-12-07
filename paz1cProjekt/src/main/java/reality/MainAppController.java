@@ -1,5 +1,7 @@
 package reality;
 
+import java.io.File;
+
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javafx.fxml.FXML;
@@ -15,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.stage.DirectoryChooser;
 import persistent.DaoFactory;
 import persistent.MapLayerDao;
 import persistent.UserDao;
@@ -89,10 +92,8 @@ public class MainAppController {
 
 	@FXML
 	private TextField cacheDirectoryTextField;
-
 	@FXML
 	private Button directoryPickerButton;
-
 	@FXML
 	private Label messageLabel;
 
@@ -156,7 +157,6 @@ public class MainAppController {
 		});
 
 		// account settings tab
-		//
 		// copy of logged in user without password hash - for editing purposes
 		UserFxModel editedUserModel = new UserFxModel();
 		editedUserModel.setUser(userModel.getUser());
@@ -171,7 +171,7 @@ public class MainAppController {
 
 		saveUserChangesButton.setOnAction(actionEvent -> {
 			if (editedUserModel.getPassword() == null) {
-				if (oldPasswordField.getText() != null) {
+				if (!oldPasswordField.getText().isEmpty()) {
 					messageLabel.setText("Please enter new password!");
 					messageLabel.setVisible(true);
 				} else {
@@ -207,13 +207,23 @@ public class MainAppController {
 					messageLabel.setText("Wrong password!");
 					messageLabel.setVisible(true);
 				}
-				editedUserModel.setPassword(null);
-				oldPasswordField.setText(null);
 			}
+			editedUserModel.setPassword(null);
+			oldPasswordField.setText(null);
 		});
-
+		
+		// select cache folder
+		directoryPickerButton.setOnAction(actionEvent ->{
+			DirectoryChooser directoryChooser = new DirectoryChooser();
+			directoryChooser.setTitle("Please select cache directory.");
+			directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+			String dirPath = directoryChooser.showDialog(null).toString();
+			editedUserModel.setCacheFolderPath(dirPath);
+			
+		});
 	}
 
+	
 	private void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
 		// get bounding box

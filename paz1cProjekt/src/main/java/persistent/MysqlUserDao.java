@@ -54,21 +54,16 @@ public class MysqlUserDao implements UserDao {
 		} else {
 			// UPDATE bez hesla
 			if (user.getPassword() == null) {
-				String sql = "UPDATE users SET " + 
-							 "name = ?, surname = ?, " + 
-							 "email = ?, username = ? "
-						+ "WHERE id = ? ;";
+				String sql = "UPDATE users SET " + "name = ?, surname = ?, " + "email = ?, username = ?, "
+						+ "cacheFolderPath = ? " + "WHERE id = ? ;";
 				jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getEmail(), user.getUsername(),
-						user.getId());
+						user.getCacheFolderPath(), user.getId());
 
 			} else { // UPDATE s heslom
-				String sql = "UPDATE users SET " +
-							 "name = ?, surname = ?, " + 
-							 "email = ?, username = ?, " + 
-							 "password = ? "
-						+ "WHERE id = ? ;";
+				String sql = "UPDATE users SET " + "name = ?, surname = ?, " + "email = ?, username = ?, "
+						+ "password = ?, cacheFolderPath = ? " + "WHERE id = ? ;";
 				jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getEmail(), user.getUsername(),
-						user.getPassword(), user.getId());
+						user.getPassword(), user.getCacheFolderPath(), user.getId());
 			}
 		}
 		return user;
