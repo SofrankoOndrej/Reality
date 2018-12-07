@@ -224,7 +224,6 @@ public class MainAppController {
 				String dirPathString = dirPath.toString();
 				editedUserModel.setCacheFolderPath(dirPathString);
 			}
-
 		});
 	}
 
