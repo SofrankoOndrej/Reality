@@ -119,6 +119,8 @@ public class MainAppController {
 		mapCanvas.widthProperty().addListener(observable -> redrawMap());
 		mapCanvas.heightProperty().addListener(observable -> redrawMap());
 
+		// bind BBox to user.BBox
+
 		// mapLayer binding to map model
 		mapNameTextField.textProperty().bindBidirectional(MapLayerModel.nameProperty());
 		inputUrlTextField.textProperty().bindBidirectional(MapLayerModel.sampleTileUrlProperty());
@@ -211,19 +213,21 @@ public class MainAppController {
 			editedUserModel.setPassword(null);
 			oldPasswordField.setText(null);
 		});
-		
+
 		// select cache folder
-		directoryPickerButton.setOnAction(actionEvent ->{
+		directoryPickerButton.setOnAction(actionEvent -> {
 			DirectoryChooser directoryChooser = new DirectoryChooser();
 			directoryChooser.setTitle("Please select cache directory.");
 			directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-			String dirPath = directoryChooser.showDialog(null).toString();
-			editedUserModel.setCacheFolderPath(dirPath);
-			
+			File dirPath = directoryChooser.showDialog(null);
+			if (dirPath != null) {
+				String dirPathString = dirPath.toString();
+				editedUserModel.setCacheFolderPath(dirPathString);
+			}
+
 		});
 	}
 
-	
 	private void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
 		// get bounding box
