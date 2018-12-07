@@ -3,6 +3,7 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
@@ -10,6 +11,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
   <tabs>
@@ -52,10 +54,37 @@
                </children></AnchorPane>
       </content>
     </Tab>
-      <Tab text="Account settings">
+      <Tab fx:id="accountSettingsTab" text="Account settings">
       <content>
        
       </content>
+         <content>
+            <AnchorPane fx:id="accounSettingsAnchorPane" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="25.0" layoutY="24.0" text="Name: " />
+                  <TextField fx:id="nameTextField" layoutX="90.0" layoutY="20.0" prefHeight="25.0" prefWidth="250.0" AnchorPane.leftAnchor="90.0" />
+                  <Label layoutX="25.0" layoutY="64.0" text="Surname:" />
+                  <TextField fx:id="surnameTextField" layoutX="90.0" layoutY="60.0" prefWidth="250.0" AnchorPane.leftAnchor="90.0" />
+                  <Label layoutX="25.0" layoutY="104.0" text="e-mail:" />
+                  <TextField fx:id="emailTextField" layoutX="90.0" layoutY="100.0" prefWidth="250.0" AnchorPane.leftAnchor="90.0" />
+                  <Label layoutX="25.0" layoutY="144.0" text="Username:" />
+                  <TextField fx:id="usernameTextField" layoutX="90.0" layoutY="140.0" prefWidth="250.0" AnchorPane.leftAnchor="90.0" />
+                  <Label layoutX="25.0" layoutY="184.0" text="Old password:" />
+                  <PasswordField fx:id="oldPasswordField" layoutX="115.0" layoutY="180.0" prefHeight="25.0" prefWidth="226.0" />
+                  <Label layoutX="25.0" layoutY="224.0" text="New password:" />
+                  <PasswordField fx:id="newPasswordField" layoutX="115.0" layoutY="220.0" prefHeight="25.0" prefWidth="224.0" AnchorPane.leftAnchor="116.0" />
+                  <Label layoutX="25.0" layoutY="264.0" text="Cache directory:" />
+                  <TextField fx:id="cacheDirectoryTextField" layoutX="115.0" layoutY="260.0" prefHeight="25.0" prefWidth="224.0" />
+                  <Button fx:id="directoryPickerButton" layoutX="339.0" layoutY="260.0" mnemonicParsing="false" text="choose folder" />
+                  <Button fx:id="saveUserChangesButton" layoutX="499.0" layoutY="332.0" mnemonicParsing="false" text="save changes" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                  <Label fx:id="messageLabel" layoutX="25.0" layoutY="304.0" text="Message" textFill="RED" visible="false" AnchorPane.leftAnchor="25.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </content>
     </Tab>
   </tabs>
 </TabPane>

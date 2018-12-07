@@ -9,6 +9,7 @@ public class User {
 	private String password;
 	private String email;
 	private Double[][] lastBoundingBox;
+	private String cacheFolderPath;
 
 	public String getUsername() {
 		return username;
@@ -64,6 +65,14 @@ public class User {
 
 	public void setLastBoundingBox(Double[][] lastBoundingBox) {
 		this.lastBoundingBox = lastBoundingBox;
+	}
+
+	public String getCacheFolderPath() {
+		return cacheFolderPath;
+	}
+
+	public void setCacheFolderPath(String cacheFolderPath) {
+		this.cacheFolderPath = cacheFolderPath;
 	}
 
 	@Override

@@ -52,11 +52,24 @@ public class MysqlUserDao implements UserDao {
 			Long id = simpleJdbcInsert.executeAndReturnKey(hodnoty).longValue();
 			user.setId(id);
 		} else {
-			// UPDATE
-			String sql = "UPDATE users SET " + "name = ? surname = ? " + "email = ? username = ? " + "password = ? "
-					+ "WHERE id = ? ";
-			jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getEmail(), user.getUsername(),
-					user.getPassword(), user.getId());
+			// UPDATE bez hesla
+			if (user.getPassword() == null) {
+				String sql = "UPDATE users SET " + 
+							 "name = ?, surname = ?, " + 
+							 "email = ?, username = ? "
+						+ "WHERE id = ? ;";
+				jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getEmail(), user.getUsername(),
+						user.getId());
+
+			} else { // UPDATE s heslom
+				String sql = "UPDATE users SET " +
+							 "name = ?, surname = ?, " + 
+							 "email = ?, username = ?, " + 
+							 "password = ? "
+						+ "WHERE id = ? ;";
+				jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getEmail(), user.getUsername(),
+						user.getPassword(), user.getId());
+			}
 		}
 		return user;
 

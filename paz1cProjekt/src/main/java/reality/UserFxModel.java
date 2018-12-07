@@ -14,6 +14,7 @@ public class UserFxModel {
 	private StringProperty email = new SimpleStringProperty();
 	private StringProperty username = new SimpleStringProperty();
 	private StringProperty password = new SimpleStringProperty();
+	private StringProperty cacheFolderPath = new SimpleStringProperty();
 
 	public Long getId() {
 		return id;
@@ -21,6 +22,18 @@ public class UserFxModel {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public void setCacheFolderPath(String cacheFolderPath) {
+		this.cacheFolderPath.set(cacheFolderPath);
+	}
+
+	public String getCacheFolderPath() {
+		return this.cacheFolderPath.get();
+	}
+
+	public StringProperty cacheFolderPathProperty() {
+		return cacheFolderPath;
 	}
 
 	public DoubleProperty[][] lastBoundingBoxProperty() {
@@ -113,6 +126,7 @@ public class UserFxModel {
 		user.setEmail(this.getEmail());
 		user.setUsername(this.getUsername());
 		user.setPassword(this.getPassword());
+		user.setCacheFolderPath(this.getCacheFolderPath());
 
 		return user;
 	}
@@ -124,6 +138,7 @@ public class UserFxModel {
 		setEmail(user.getEmail());
 		setUsername(user.getUsername());
 		setPassword(user.getPassword());
+		setCacheFolderPath(user.getCacheFolderPath());
 	}
 
 	@Override
