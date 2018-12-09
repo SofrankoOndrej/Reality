@@ -21,8 +21,8 @@ public class MapLayer {
 		return mapServerUrl;
 	}
 
-	public void setUrl(String url) {
-		this.mapServerUrl = url;
+	public void setMapServerUrl(String mapServerUrl) {
+		this.mapServerUrl = mapServerUrl;
 	}
 
 	public String getName() {

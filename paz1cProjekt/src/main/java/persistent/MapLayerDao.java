@@ -10,7 +10,7 @@ public interface MapLayerDao {
 
 	void add(MapLayer mapLayer);
 
-	List<MapLayer> getAll();
+	List<MapLayer> getAll(User user);
 
 	MapLayer save(MapLayer mapLayer, User user);
 	

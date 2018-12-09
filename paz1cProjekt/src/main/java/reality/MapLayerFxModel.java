@@ -17,7 +17,7 @@ public class MapLayerFxModel {
 		MapLayer mapLayer = new MapLayer();
 		mapLayer.setId(getId());
 		mapLayer.setName(getName());
-		mapLayer.setUrl(getUrl());
+		mapLayer.setMapServerUrl(getUrl());
 		mapLayer.setSampleTileUrl(getSampleTileUrl());
 		mapLayer.setCacheFolderPath(getCacheFolderPath());
 		mapLayer.setTileUrlFormat(getTileUrlFormat());

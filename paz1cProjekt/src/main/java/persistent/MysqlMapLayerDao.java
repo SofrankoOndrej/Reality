@@ -1,9 +1,17 @@
 package persistent;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import entities.MapLayer;
 import entities.User;
@@ -23,10 +31,65 @@ public class MysqlMapLayerDao implements MapLayerDao {
 
 	}
 
+//	@Override
+//	public List<MapLayer> getAll(User user) {
+//		List<MapLayer> mapLayers = new ArrayList<MapLayer>();
+//		String sql = "SELECT * FROM mapLayers WHERE users_id = " + user.getId(); 
+//		mapLayers = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(mapLayers.class));
+//		return mapLayers;
+//		
+//	}
+
 	@Override
-	public List<MapLayer> getAll() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<MapLayer> getAll(User user) {
+		String sql = "SELECT id FROM map_layers WHERE users_id = " + user.getId();
+		List<Integer> mapLayerId = jdbcTemplate.queryForList(sql, Integer.class);
+		// get mapLayerById
+		List<MapLayer> mapLayers = new ArrayList<>();
+		if (mapLayerId != null) {
+			for (int i = 0; i < mapLayerId.size(); i++) {
+				mapLayers.add(getById(mapLayerId.get(i)));
+			}
+		}
+		return mapLayers;
+		// List<MapLayer> mapLayer = jdbcTemplate.query(sql, new
+		// ResultSetExtractor<List<MapLayer>>() {
+//
+//			@Override
+//			public List<MapLayer> extractData(ResultSet rs) throws SQLException, DataAccessException {
+//				List<MapLayer> mapLayers = new ArrayList<>();
+//				MapLayer mapLayer = null;
+//				while (rs.next()) {
+//					Long id = rs.getLong("id");
+//					if (mapLayer == null || mapLayer.getId() != id) {
+//						mapLayer = new MapLayer();
+//						mapLayer.setId(rs.getLong("id"));
+//						mapLayer.setName(rs.getString("name"));
+//						mapLayer.setUrl(rs.getString("mapServerUrl"));
+//						mapLayer.setSampleTileUrl(rs.getString("sampleTileUrl"));
+//						mapLayer.setCacheFolderPath(rs.getString("cacheFolderPath"));
+//						mapLayer.setTileUrlFormat(rs.getString("tileUrlFormat"));
+//						mapLayers.add(mapLayer);
+//					}
+//				}
+//				return mapLayers;
+//			}
+//		});
+//
+//		return mapLayer;
+
+	}
+
+	private MapLayer getById(Integer mapLayerId) {
+		String sql = "SELECT * FROM map_layers WHERE id = " + mapLayerId;
+		MapLayer mapLayer = new MapLayer();
+		try {
+			mapLayer = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(MapLayer.class));
+			return mapLayer;
+		} catch (EmptyResultDataAccessException e) {
+			// e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override

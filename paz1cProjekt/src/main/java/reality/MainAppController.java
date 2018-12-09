@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import entities.MapLayer;
 import entities.Tile;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,6 +22,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
@@ -35,6 +38,7 @@ public class MainAppController {
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 	private MapLayerFxModel mapLayerModel;
 	private UserFxModel userModel;
+	//private StringProperty bbox;
 
 	@FXML
 	private AnchorPane mapAnchorPane;
@@ -115,6 +119,7 @@ public class MainAppController {
 		userDao = DaoFactory.INSTANCE.getUserDao();
 		mapLayerModel = new MapLayerFxModel();
 		this.userModel = userModel;
+	//	bbox = userModel.getLastBoundingBox(); // load last bbox
 	}
 
 	@FXML
@@ -127,9 +132,17 @@ public class MainAppController {
 		mapCanvas.widthProperty().addListener(observable -> redrawMap());
 		mapCanvas.heightProperty().addListener(observable -> redrawMap());
 
-		// bind BBox to user.BBox +
+		// ??? // bind BBox to user.BBox
 		
 		
+		// fit last bbox to canvas size + best zoom
+			//set new bbox
+			
+		
+		// bind canvas size to bbox / one way binding
+		mapCanvas.widthProperty().addListener(listener -> updateBBoxX());
+		mapCanvas.heightProperty().addListener(listener -> updateBBoxY());
+				
 		// zoom binding
 		zoomSlider.valueProperty().bindBidirectional(userModel.lastZoomProperty());
 
@@ -239,27 +252,47 @@ public class MainAppController {
 		});
 	}
 
+	private void updateBBoxY() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void updateBBoxX() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
 		// get bounding box
 		
 		// if user does not have BBox -> use default
 		if (userModel.getLastBoundingBox() == null) {
-			String bbox = "1; 1; 2; 2" ;
+			// kosice bbox
+			String bbox = "21.148414221191,48.694094875476,21.327628698729,48.73532285334" ;
 			userModel.setLastBoundingBox(bbox);
+			userModel.setLastZoom(zoomSlider.getValue());
 		}
-
+		// select used mapLayer
+		List<MapLayer> mapLayers = mapLayerDao.getAll(userModel.getUser());
+		if(!mapLayers.isEmpty()) {
+			mapLayerModel.setMapLayer(mapLayers.get(0));
+		}
+		
 		// determine what tiles you need
-		// get zoom
 		LoadWebMap webMapLoader = new LoadWebMap(userModel.getUser(), mapLayerModel.getMapLayer(), userModel.getLastZoom());
 		List<Tile> tileList = webMapLoader.getListOfTiles(userModel.getLastBoundingBox());
 
+		
+		// IMPLEMENT NEW THREAD FOR LOADING IMAGES
 		Image tileImage;
 		for (Tile tile : tileList) {
 			// get map tiles
 			tileImage = webMapLoader.getTile(tile);
-			// compute position of imageTile in respect to BBox = canvas
-			int xPixelPosition = 0;
+			// compute pixel position of imageTile in respect to BBox = canvas --> compute shift
+			
+			// set pixel position for iterated tile
+			int xPixelPosition = -128;
 			int yPixelPosition = 0;
 			// draw each tile into graphical context of canvas
 			gc.drawImage(tileImage, xPixelPosition, yPixelPosition);

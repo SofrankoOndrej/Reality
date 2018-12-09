@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 public class MapUtils {
 
 	public static List<Tile> getTilesFromBoundingBox(String boundingBoxString, int zoomLevel) {
-		double[] boundingBox = Utils.bBoxString2DoubleArray(boundingBoxString);
+		double[] boundingBox = bBoxString2DoubleArray(boundingBoxString);
 
 		double upperLeft[] = TileUtils.globe2mercator(boundingBox[0], boundingBox[1]);
 		double bottomRight[] = TileUtils.globe2mercator(boundingBox[2], boundingBox[3]);
@@ -23,7 +23,7 @@ public class MapUtils {
 		// iterate through whole tile region
 		for (int longitude = upperLeftTileNumbers[0]; longitude <= upperBottomRightNumbers[0]; longitude++) {
 // vyries v ktorom smere treba iterovat
-			for (int latitude = upperLeftTileNumbers[1]; latitude > upperBottomRightNumbers[1]; latitude++) {
+			for (int latitude = upperLeftTileNumbers[1]; latitude >= upperBottomRightNumbers[1]; latitude--) {
 				// create tile
 				Tile tileToAdd = new Tile();
 				tileToAdd.setLongitude(longitude);
@@ -33,7 +33,7 @@ public class MapUtils {
 			}
 		}
 
-		return null;
+		return tileList;
 	}
 
 	public static String constructUrl(MapLayer mapLayer, Tile tile) {
@@ -66,6 +66,24 @@ public class MapUtils {
 	public static Image downloadTile(Tile tile, String cacheFolderPath) {
 
 		return null;
+	}
+	
+	public static double[] bBoxString2DoubleArray(String bbox) {
+		String[] coordinates = bbox.split(",");
+		double[] bboxDoubleArray = new double[4];
+		for (int i = 0; i < 4; i++) {
+			bboxDoubleArray[i] = Double.parseDouble(coordinates[i]);
+		}
+
+		return bboxDoubleArray;
+	}
+
+	public static String bBoxDoubleArray2String(double[] bbox) {
+		String bboxString;
+		bboxString = Double.toString(bbox[0]) + ", " + Double.toString(bbox[1]) + ", " + Double.toString(bbox[2]) + ", "
+				+ Double.toString(bbox[3]);
+
+		return bboxString;
 	}
 
 }

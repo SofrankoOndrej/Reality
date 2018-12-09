@@ -35,7 +35,7 @@ public class LoadWebMap implements Map {
 	public Image getTile(Tile tile) {
 		// sprav URL pola typu mapy
 		String constructedUrl = MapUtils.constructUrl(mapLayer, tile);
-		Image tileImage = new Image(constructedUrl);
+		Image tileImage = new Image(constructedUrl,true);
 		return tileImage;
 	}
 
