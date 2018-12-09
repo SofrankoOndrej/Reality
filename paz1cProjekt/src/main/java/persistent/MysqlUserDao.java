@@ -55,15 +55,15 @@ public class MysqlUserDao implements UserDao {
 			// UPDATE bez hesla
 			if (user.getPassword() == null) {
 				String sql = "UPDATE users SET " + "name = ?, surname = ?, " + "email = ?, username = ?, "
-						+ "cacheFolderPath = ? " + "WHERE id = ? ;";
+						+ "cacheFolderPath = ?, lastZoom = ? " + "WHERE id = ? ;";
 				jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getEmail(), user.getUsername(),
-						user.getCacheFolderPath(), user.getId());
+						user.getCacheFolderPath(), user.getLastZoom(), user.getId());
 
 			} else { // UPDATE s heslom
 				String sql = "UPDATE users SET " + "name = ?, surname = ?, " + "email = ?, username = ?, "
-						+ "password = ?, cacheFolderPath = ? " + "WHERE id = ? ;";
+						+ "password = ?, cacheFolderPath = ?, lastZoom = ? " + "WHERE id = ? ;";
 				jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getEmail(), user.getUsername(),
-						user.getPassword(), user.getCacheFolderPath(), user.getId());
+						user.getPassword(), user.getCacheFolderPath(), user.getLastZoom(), user.getId());
 			}
 		}
 		return user;
@@ -92,7 +92,7 @@ public class MysqlUserDao implements UserDao {
 	 */
 	@Override
 	public User getByUsernameFull(String username) {
-		String sql = "SELECT users.id, users.name, users.surname, users.email, users.username, users.password "
+		String sql = "SELECT users.id, users.name, users.surname, users.email, users.username, users.password, users.lastBoundingBox, users.cacheFolderPath, users.lastZoom "
 				+ "FROM users " + "WHERE users.username = '" + username + "'";
 		User user;
 		try {

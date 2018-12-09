@@ -31,6 +31,22 @@ public class Utils {
 
 		return sb.toString();
 	}
-	
-	
+
+	public static double[] bBoxString2DoubleArray(String bbox) {
+		String[] coordinates = bbox.split(";");
+		double[] bboxDoubleArray = new double[4];
+		for (int i = 0; i < 4; i++) {
+			bboxDoubleArray[i] = Double.parseDouble(coordinates[i]);
+		}
+
+		return bboxDoubleArray;
+	}
+
+	public static String bBoxDoubleArray2String(double[] bbox) {
+		String bboxString;
+		bboxString = Double.toString(bbox[0]) + "; " + Double.toString(bbox[1]) + "; " + Double.toString(bbox[2]) + "; "
+				+ Double.toString(bbox[3]);
+
+		return bboxString;
+	}
 }

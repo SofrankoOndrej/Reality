@@ -43,7 +43,7 @@ public class MysqlMapLayerDao implements MapLayerDao {
 			Map<String, Object> hodnoty = new HashMap<>();
 			hodnoty.put("name", mapLayer.getName());
 			hodnoty.put("sampleTileUrl", mapLayer.getSampleTileUrl());
-			hodnoty.put("mapServerUrl", mapLayer.getUrl());
+			hodnoty.put("mapServerUrl", mapLayer.getMapServerUrl());
 			hodnoty.put("users_id", user.getId());
 
 			// hodnoty.put("users_id", user.getId());
@@ -53,7 +53,7 @@ public class MysqlMapLayerDao implements MapLayerDao {
 		} else {
 			// UPDATE
 			String sql = "UPDATE map_layers SET " + "name = ? mapServerUrl = ? sampleTileUrl = ? " + "WHERE id = ? ";
-			jdbcTemplate.update(sql, mapLayer.getName(), mapLayer.getUrl(), mapLayer.getSampleTileUrl(),
+			jdbcTemplate.update(sql, mapLayer.getName(), mapLayer.getMapServerUrl(), mapLayer.getSampleTileUrl(),
 					mapLayer.getId());
 		}
 		return mapLayer;

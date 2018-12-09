@@ -8,7 +8,8 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
-	private Double[][] lastBoundingBox;
+	private String lastBoundingBox;
+	private int lastZoom;
 	private String cacheFolderPath;
 
 	public String getUsername() {
@@ -59,11 +60,11 @@ public class User {
 		this.id = id;
 	}
 
-	public Double[][] getLastBoundingBox() {
+	public String getLastBoundingBox() {
 		return lastBoundingBox;
 	}
 
-	public void setLastBoundingBox(Double[][] lastBoundingBox) {
+	public void setLastBoundingBox(String lastBoundingBox) {
 		this.lastBoundingBox = lastBoundingBox;
 	}
 
@@ -73,6 +74,14 @@ public class User {
 
 	public void setCacheFolderPath(String cacheFolderPath) {
 		this.cacheFolderPath = cacheFolderPath;
+	}
+
+	public int getLastZoom() {
+		return lastZoom;
+	}
+
+	public void setLastZoom(int lastZoom) {
+		this.lastZoom = lastZoom;
 	}
 
 	@Override

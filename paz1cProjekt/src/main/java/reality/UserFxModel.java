@@ -3,12 +3,17 @@ package reality;
 import entities.User;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableArray;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class UserFxModel {
 
 	private Long id;
-	private DoubleProperty[][] lastBoundingBox;
+	private StringProperty lastBoundingBox = new SimpleStringProperty();
+	private IntegerProperty lastZoom = new SimpleIntegerProperty();
 	private StringProperty name = new SimpleStringProperty();
 	private StringProperty surname = new SimpleStringProperty();
 	private StringProperty email = new SimpleStringProperty();
@@ -24,6 +29,16 @@ public class UserFxModel {
 		this.id = id;
 	}
 	
+	// opatrenie aby zoom bol stale integer
+	public void setLastZoom(double lastZoom) {
+		this.lastZoom.set((int) lastZoom);
+	}
+	public int getLastZoom() {
+		return this.lastZoom.get();
+	}
+	public IntegerProperty lastZoomProperty() {
+		return lastZoom;
+	}
 	public void setCacheFolderPath(String cacheFolderPath) {
 		this.cacheFolderPath.set(cacheFolderPath);
 	}
@@ -36,26 +51,16 @@ public class UserFxModel {
 		return cacheFolderPath;
 	}
 
-	public DoubleProperty[][] lastBoundingBoxProperty() {
+	public StringProperty lastBoundingBoxProperty() {
 		return lastBoundingBox;
 	}
 
-	public Double[][] getLastBoundingBox() {
-		Double[][] multiPoint = new Double[2][2];
-		// napln multipoint
-		multiPoint[0][0] = lastBoundingBox[0][0].get();
-		multiPoint[0][1] = lastBoundingBox[0][1].get();
-		multiPoint[1][0] = lastBoundingBox[1][0].get();
-		multiPoint[1][1] = lastBoundingBox[1][1].get();
-		return multiPoint;
+	public String getLastBoundingBox() {
+		return lastBoundingBox.get();
 	}
 
-	public void setLastBoundingBox(Double[][] lastBoundingBox) {
-		// napln DoubleProperty
-		this.lastBoundingBox[0][0].set(lastBoundingBox[0][0]);
-		this.lastBoundingBox[0][1].set(lastBoundingBox[0][1]);
-		this.lastBoundingBox[1][0].set(lastBoundingBox[1][0]);
-		this.lastBoundingBox[1][1].set(lastBoundingBox[1][1]);
+	public void setLastBoundingBox(String lastBoundingBox) {
+		this.lastBoundingBox.set(lastBoundingBox);
 	}
 
 	public String getName() {
@@ -127,6 +132,8 @@ public class UserFxModel {
 		user.setUsername(this.getUsername());
 		user.setPassword(this.getPassword());
 		user.setCacheFolderPath(this.getCacheFolderPath());
+		user.setLastBoundingBox(this.getLastBoundingBox());
+		user.setLastZoom(this.getLastZoom());
 
 		return user;
 	}
@@ -139,6 +146,8 @@ public class UserFxModel {
 		setUsername(user.getUsername());
 		setPassword(user.getPassword());
 		setCacheFolderPath(user.getCacheFolderPath());
+		setLastBoundingBox(user.getLastBoundingBox());
+		setLastZoom(user.getLastZoom());
 	}
 
 	@Override

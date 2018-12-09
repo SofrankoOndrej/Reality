@@ -7,10 +7,12 @@ import javafx.scene.image.Image;
 
 public interface Map {
 
-	Image getTile(MapLayer mapLayer, Tile tile);
+	Image getTile(Tile tile);
 	
-	List<Image> getTiles(MapLayer mapLayer, Double[][] boundingBox, int zoomLevel);
+	List<Image> getTiles(String boundingBox);
+	
+	List<Tile> getListOfTiles(String boundingBox);
 
-	Image loadMapLayer(MapLayer mapLayer, Double[][] boundingBox, int zoomLevel);
+	Image loadMapLayer(String boundingBox);
 
 }

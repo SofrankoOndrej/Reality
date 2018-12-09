@@ -4,7 +4,7 @@ public class MapLayer {
 
 	private Long id;
 	private String name;
-	private String url;
+	private String mapServerUrl;
 	private String sampleTileUrl;
 	private String cacheFolderPath;
 	private String tileUrlFormat;
@@ -17,12 +17,12 @@ public class MapLayer {
 		this.sampleTileUrl = sampleTileUrl;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getMapServerUrl() {
+		return mapServerUrl;
 	}
 
 	public void setUrl(String url) {
-		this.url = url;
+		this.mapServerUrl = url;
 	}
 
 	public String getName() {
@@ -59,7 +59,7 @@ public class MapLayer {
 
 	@Override
 	public String toString() {
-		return "Map layer: [id: " + getId() + ", name: " + getName() + "URL: " + getUrl() + "Sample Tile URL: "
+		return "Map layer: [id: " + getId() + ", name: " + getName() + "URL: " + getMapServerUrl() + "Sample Tile URL: "
 				+ getSampleTileUrl() + " ]";
 	}
 }

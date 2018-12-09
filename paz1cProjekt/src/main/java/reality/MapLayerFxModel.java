@@ -27,7 +27,7 @@ public class MapLayerFxModel {
 	public void setMapLayer(MapLayer mapLayer) {
 		this.setId(mapLayer.getId());
 		this.setName(mapLayer.getName());
-		this.setUrl(mapLayer.getUrl());
+		this.setUrl(mapLayer.getMapServerUrl());
 		this.setSampleTileUrl(mapLayer.getSampleTileUrl());
 		this.setCacheFolderPath(mapLayer.getCacheFolderPath());
 		this.setTileUrlFormat(mapLayer.getTileUrlFormat());

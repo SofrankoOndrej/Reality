@@ -1,9 +1,13 @@
 package reality;
 
 import java.io.File;
+import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import entities.Tile;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -11,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -21,13 +26,14 @@ import javafx.stage.DirectoryChooser;
 import persistent.DaoFactory;
 import persistent.MapLayerDao;
 import persistent.UserDao;
+import util.LoadWebMap;
 import util.Utils;
 
 public class MainAppController {
 
 	private MapLayerDao mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
-	private MapLayerFxModel MapLayerModel;
+	private MapLayerFxModel mapLayerModel;
 	private UserFxModel userModel;
 
 	@FXML
@@ -96,16 +102,18 @@ public class MainAppController {
 	private Button directoryPickerButton;
 	@FXML
 	private Label messageLabel;
+	@FXML
+	private Slider zoomSlider;
 
 	public MainAppController() {
 		mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
-		MapLayerModel = new MapLayerFxModel();
+		mapLayerModel = new MapLayerFxModel();
 	}
 
 	public MainAppController(UserFxModel userModel) {
 		mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
 		userDao = DaoFactory.INSTANCE.getUserDao();
-		MapLayerModel = new MapLayerFxModel();
+		mapLayerModel = new MapLayerFxModel();
 		this.userModel = userModel;
 	}
 
@@ -119,20 +127,24 @@ public class MainAppController {
 		mapCanvas.widthProperty().addListener(observable -> redrawMap());
 		mapCanvas.heightProperty().addListener(observable -> redrawMap());
 
-		// bind BBox to user.BBox
+		// bind BBox to user.BBox +
+		
+		
+		// zoom binding
+		zoomSlider.valueProperty().bindBidirectional(userModel.lastZoomProperty());
 
 		// mapLayer binding to map model
-		mapNameTextField.textProperty().bindBidirectional(MapLayerModel.nameProperty());
-		inputUrlTextField.textProperty().bindBidirectional(MapLayerModel.sampleTileUrlProperty());
-		mapServerUrlTextField.textProperty().bindBidirectional(MapLayerModel.mapServerUrlProperty());
+		mapNameTextField.textProperty().bindBidirectional(mapLayerModel.nameProperty());
+		inputUrlTextField.textProperty().bindBidirectional(mapLayerModel.sampleTileUrlProperty());
+		mapServerUrlTextField.textProperty().bindBidirectional(mapLayerModel.mapServerUrlProperty());
 
 		// preview map TILE from URL
 		previewMapTileButton.setOnAction(actionEvent -> {
 			// validate url string
-			if (Utils.isValidURL(MapLayerModel.getSampleTileUrl())) {
-				Image tileImage = new Image(MapLayerModel.getSampleTileUrl());
+			if (Utils.isValidURL(mapLayerModel.getSampleTileUrl())) {
+				Image tileImage = new Image(mapLayerModel.getSampleTileUrl());
 				TilePreviewImageView.setImage(tileImage);
-				MapLayerModel.setUrl(Utils.parseUrl2UrlMapBaseFormat(MapLayerModel.getSampleTileUrl()));
+				mapLayerModel.setUrl(Utils.parseUrl2UrlMapBaseFormat(mapLayerModel.getSampleTileUrl()));
 			} else {
 				inputUrlTextField.setText("Please enter valid URL string");
 			}
@@ -155,7 +167,7 @@ public class MainAppController {
 
 			// parse url to basemap format
 
-			mapLayerDao.save(MapLayerModel.getMapLayer(), userModel.getUser());
+			mapLayerDao.save(mapLayerModel.getMapLayer(), userModel.getUser());
 		});
 
 		// account settings tab
@@ -230,17 +242,34 @@ public class MainAppController {
 	private void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
 		// get bounding box
-//		userModel.
+		
+		// if user does not have BBox -> use default
+		if (userModel.getLastBoundingBox() == null) {
+			String bbox = "1; 1; 2; 2" ;
+			userModel.setLastBoundingBox(bbox);
+		}
 
 		// determine what tiles you need
-		// get map tiles
-		// construct map
+		// get zoom
+		LoadWebMap webMapLoader = new LoadWebMap(userModel.getUser(), mapLayerModel.getMapLayer(), userModel.getLastZoom());
+		List<Tile> tileList = webMapLoader.getListOfTiles(userModel.getLastBoundingBox());
 
+		Image tileImage;
+		for (Tile tile : tileList) {
+			// get map tiles
+			tileImage = webMapLoader.getTile(tile);
+			// compute position of imageTile in respect to BBox = canvas
+			int xPixelPosition = 0;
+			int yPixelPosition = 0;
+			// draw each tile into graphical context of canvas
+			gc.drawImage(tileImage, xPixelPosition, yPixelPosition);
+		}
 		// draw map
 
 		mapCanvas.setViewOrder(1);
-		gc.setFill(Color.GREEN);
-		gc.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+
+//		gc.setFill(Color.rgb(15, 25, 95));
+//		gc.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
 	}
 
 	public void drawInCanvas() {

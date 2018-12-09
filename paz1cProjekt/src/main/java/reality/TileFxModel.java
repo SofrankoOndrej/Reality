@@ -12,6 +12,7 @@ public class TileFxModel {
 	private IntegerProperty zoom;
 	private StringProperty thumbnail;
 	private StringProperty cachedLocation;
+	
 
 	public Long getId() {
 		return id;
