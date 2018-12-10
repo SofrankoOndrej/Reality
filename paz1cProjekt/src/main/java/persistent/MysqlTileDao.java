@@ -26,8 +26,8 @@ public class MysqlTileDao implements TileDao {
 	}
 
 	@Override
-	public Tile save(Tile tile,User user,MapLayer mapLayer) {
-		
+	public Tile save(Tile tile, User user, MapLayer mapLayer) {
+
 		if (tile == null)
 			return null;
 		if (tile.getId() == null) {
@@ -37,7 +37,7 @@ public class MysqlTileDao implements TileDao {
 			simpleJdbcInsert.usingGeneratedKeyColumns("id");
 
 			simpleJdbcInsert.usingColumns("longitude", "latitude", "zoom", "map_layer_id", "map_layer_users_id",
-					"map_layer_users_id", "thumbnail", "cachedLocation");
+					"map_layer_users_id", "thumbnail", "cachedLocation", "fileFormat");
 			Map<String, Object> hodnoty = new HashMap<>();
 			hodnoty.put("longitude", tile.getLongitude());
 			hodnoty.put("latitude", tile.getLatitude());
@@ -46,12 +46,13 @@ public class MysqlTileDao implements TileDao {
 			hodnoty.put("map_layer_users_id", user.getId());
 			hodnoty.put("thumbnail", tile.getThumbnail());
 			hodnoty.put("cachedLocation", tile.getCachedLocation());
+			hodnoty.put("fileFormat", tile.getFileFormat());
 
 			Long id = simpleJdbcInsert.executeAndReturnKey(hodnoty).longValue();
 			tile.setId(id);
 		} else {
-			String sql = "UPDATE tiles SET " + "thumbnail = ?, cachedLocation = ? " + "WHERE id = ? ;";
-			jdbcTemplate.update(sql, tile.getThumbnail(), tile.getCachedLocation(), tile.getId());
+			String sql = "UPDATE tiles SET " + "thumbnail = ?, cachedLocation = ?, fileFormat = ? " + "WHERE id = ? ;";
+			jdbcTemplate.update(sql, tile.getThumbnail(), tile.getCachedLocation(), tile.getFileFormat(), tile.getId());
 		}
 		return tile;
 	}

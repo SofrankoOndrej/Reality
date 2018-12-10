@@ -12,7 +12,19 @@ public class TileFxModel {
 	private IntegerProperty zoom;
 	private StringProperty thumbnail;
 	private StringProperty cachedLocation;
-	
+	private StringProperty fileFormat;
+
+	public String getFileFormat() {
+		return fileFormat.get();
+	}
+
+	public void setFileFormat(String fileFormat) {
+		this.fileFormat.set(fileFormat);
+	}
+
+	public StringProperty fileFormatProperty() {
+		return fileFormat;
+	}
 
 	public Long getId() {
 		return id;
@@ -90,6 +102,7 @@ public class TileFxModel {
 		tile.setZoom(getZoom());
 		tile.setThumbnail(getThumbnail());
 		tile.setCachedLocation(getCachedLocation());
+		tile.setFileFormat(getFileFormat());
 
 		return tile;
 	}
@@ -101,5 +114,6 @@ public class TileFxModel {
 		setZoom(tile.getZoom());
 		setThumbnail(tile.getThumbnail());
 		setCachedLocation(tile.getCachedLocation());
+		setFileFormat(tile.getFileFormat());
 	}
 }

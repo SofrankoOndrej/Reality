@@ -1,5 +1,14 @@
 package util;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import entities.Tile;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+
 public class TileUtils {
 
 	public static double[] globe2mercator(double longitude, double latitude) {
@@ -31,8 +40,6 @@ public class TileUtils {
 
 		return globeXY;
 	}
-	
-	
 
 	public static Integer[] mercator2pixel(Double mercX, Double mercY, int zoomLevel) {
 		Integer[] pixelXY = new Integer[2];
@@ -84,6 +91,63 @@ public class TileUtils {
 		pixelXY[1] = (int) (mapSize * 256 - Math.round((y * mapSize + 0.5) * 256) - tileY * 256); // opacny smer
 
 		return pixelXY;
+	}
+
+	public static Tile saveTile(Image image, Tile tile, String cacheFolderPath) {
+		String constructedFolderPath = constructFolderPath(tile, cacheFolderPath);
+		File folder = new File(constructedFolderPath);
+		String fileExtension = tile.getFileFormat() == null ? "" : tile.getFileFormat();
+		String constructedFilePath = constructFilePath(tile, cacheFolderPath) + fileExtension;
+		File file = new File(constructedFilePath);
+		
+		boolean directoriesCreated = folder.mkdirs();
+		boolean fileSaved = isTileDownloaded(tile, cacheFolderPath);
+		if (directoriesCreated && !fileSaved) {
+				try {
+					ImageIO.write(SwingFXUtils.fromFXImage(image, null), tile.getFileFormat(), file);
+					tile.setCachedLocation(constructedFilePath);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println(constructedFilePath);
+		}
+
+		return tile;
+
+	}
+
+	public static boolean isTileDownloaded(Tile tile, String cacheFolderPath) {
+		String filePath = constructFilePath(tile, cacheFolderPath);
+		File tileFile = new File(filePath);
+
+		return tileFile.exists() && !tileFile.isDirectory();
+	}
+
+	public static String constructFolderPath(Tile tile, String cacheFolderPath) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(cacheFolderPath);
+		if (!cacheFolderPath.endsWith("\\")) {
+			sb.append("\\");
+		}
+		sb.append(tile.getZoom());
+		sb.append("\\");
+		sb.append(tile.getLongitude());
+		sb.append("\\");
+
+		return sb.toString();
+
+	}
+
+	public static String constructFilePath(Tile tile, String cacheFolderPath) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(constructFolderPath(tile, cacheFolderPath));
+		if (!sb.toString().endsWith("\\")) {
+			sb.append("\\");
+		}
+		sb.append(tile.getLatitude());
+
+		return sb.toString();
 	}
 
 }

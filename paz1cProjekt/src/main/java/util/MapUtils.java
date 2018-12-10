@@ -3,10 +3,8 @@ package util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import entities.MapLayer;
 import entities.Tile;
-import javafx.scene.image.Image;
 
 public class MapUtils {
 
@@ -42,7 +40,6 @@ public class MapUtils {
 			// default fallback for tile url format
 			StringBuilder sb = new StringBuilder();
 			sb.append(mapLayer.getMapServerUrl());
-			sb.append("/");
 			sb.append(tile.getZoom());
 			sb.append("/");
 			sb.append(tile.getLongitude());
@@ -57,17 +54,8 @@ public class MapUtils {
 
 	}
 
-	public static boolean isTileDownloaded(Tile tile, String cacheFolderPath) {
-		String folderPath = cacheFolderPath + tile.getZoom() + "/" + tile.getLongitude() + "/";
-		boolean exists = new File(folderPath, Integer.toString(tile.getLatitude())).exists();
-		return exists;
-	}
-
-	public static Image downloadTile(Tile tile, String cacheFolderPath) {
-
-		return null;
-	}
 	
+
 	public static double[] bBoxString2DoubleArray(String bbox) {
 		String[] coordinates = bbox.split(",");
 		double[] bboxDoubleArray = new double[4];
@@ -85,5 +73,7 @@ public class MapUtils {
 
 		return bboxString;
 	}
+
+	
 
 }

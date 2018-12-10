@@ -38,7 +38,7 @@ public class MainAppController {
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 	private MapLayerFxModel mapLayerModel;
 	private UserFxModel userModel;
-	//private StringProperty bbox;
+	// private StringProperty bbox;
 
 	@FXML
 	private AnchorPane mapAnchorPane;
@@ -119,11 +119,15 @@ public class MainAppController {
 		userDao = DaoFactory.INSTANCE.getUserDao();
 		mapLayerModel = new MapLayerFxModel();
 		this.userModel = userModel;
-	//	bbox = userModel.getLastBoundingBox(); // load last bbox
+		// bbox = userModel.getLastBoundingBox(); // load last bbox
 	}
 
 	@FXML
 	void initialize() {
+		// set initial size of map canvas
+		mapCanvas.setWidth(mapAnchorPane.getWidth());
+		mapCanvas.setHeight(mapAnchorPane.getHeight());
+
 		// automatic resize of canvas
 		mapCanvas.widthProperty().bind(mapAnchorPane.widthProperty());
 		mapCanvas.heightProperty().bind(mapAnchorPane.heightProperty());
@@ -133,16 +137,28 @@ public class MainAppController {
 		mapCanvas.heightProperty().addListener(observable -> redrawMap());
 
 		// ??? // bind BBox to user.BBox
-		
-		
+
 		// fit last bbox to canvas size + best zoom
-			//set new bbox
-			
-		
+		double mapCanvasPixelHeight = mapCanvas.getHeight();
+		double mapCanvasPixelWidth = mapCanvas.getWidth();
+
+		int bboxPixelHeight;
+		int bboxPixelWidth;
+
+		double bboxOptimalHeight;
+		double bboxOptimalWidth;
+
+		double bboxULx;
+		double bboxULy;
+
+		double bboxBRx;
+		double bboxBRy;
+		// set new bbox
+
 		// bind canvas size to bbox / one way binding
 		mapCanvas.widthProperty().addListener(listener -> updateBBoxX());
 		mapCanvas.heightProperty().addListener(listener -> updateBBoxY());
-				
+
 		// zoom binding
 		zoomSlider.valueProperty().bindBidirectional(userModel.lastZoomProperty());
 
@@ -254,43 +270,45 @@ public class MainAppController {
 
 	private void updateBBoxY() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void updateBBoxX() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
 		// get bounding box
+//		userModel.setLastBoundingBox("");
 		
 		// if user does not have BBox -> use default
 		if (userModel.getLastBoundingBox() == null) {
 			// kosice bbox
-			String bbox = "21.148414221191,48.694094875476,21.327628698729,48.73532285334" ;
+			String bbox = "21.148414221191,48.694094875476,21.327628698729,48.73532285334";
 			userModel.setLastBoundingBox(bbox);
 			userModel.setLastZoom(zoomSlider.getValue());
 		}
 		// select used mapLayer
 		List<MapLayer> mapLayers = mapLayerDao.getAll(userModel.getUser());
-		if(!mapLayers.isEmpty()) {
+		if (!mapLayers.isEmpty()) {
 			mapLayerModel.setMapLayer(mapLayers.get(0));
 		}
-		
+
 		// determine what tiles you need
-		LoadWebMap webMapLoader = new LoadWebMap(userModel.getUser(), mapLayerModel.getMapLayer(), userModel.getLastZoom());
+		LoadWebMap webMapLoader = new LoadWebMap(userModel.getUser(), mapLayerModel.getMapLayer(),
+				userModel.getLastZoom());
 		List<Tile> tileList = webMapLoader.getListOfTiles(userModel.getLastBoundingBox());
 
-		
 		// IMPLEMENT NEW THREAD FOR LOADING IMAGES
 		Image tileImage;
 		for (Tile tile : tileList) {
 			// get map tiles
 			tileImage = webMapLoader.getTile(tile);
-			// compute pixel position of imageTile in respect to BBox = canvas --> compute shift
-			
+			// compute pixel position of imageTile in respect to BBox = canvas --> compute
+			// shift
+
 			// set pixel position for iterated tile
 			int xPixelPosition = -128;
 			int yPixelPosition = 0;
@@ -300,9 +318,6 @@ public class MainAppController {
 		// draw map
 
 		mapCanvas.setViewOrder(1);
-
-//		gc.setFill(Color.rgb(15, 25, 95));
-//		gc.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
 	}
 
 	public void drawInCanvas() {

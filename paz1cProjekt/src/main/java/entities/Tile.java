@@ -8,6 +8,7 @@ public class Tile {
 	private int zoom;
 	private String thumbnail;
 	private String cachedLocation;
+	private String fileFormat;
 
 	public Long getId() {
 		return id;
@@ -56,5 +57,15 @@ public class Tile {
 	public void setCachedLocation(String cachedLocation) {
 		this.cachedLocation = cachedLocation;
 	}
+
+	public String getFileFormat() {
+		return fileFormat;
+	}
+
+	public void setFileFormat(String fileFormat) {
+		this.fileFormat = fileFormat;
+	}
+
+	
 
 }

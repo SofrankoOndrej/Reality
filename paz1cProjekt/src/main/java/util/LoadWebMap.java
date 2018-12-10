@@ -1,8 +1,13 @@
 package util;
 
+import java.awt.ImageCapabilities;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -33,9 +38,43 @@ public class LoadWebMap implements Map {
 
 	@Override
 	public Image getTile(Tile tile) {
+		TileDao tileDao = DaoFactory.INSTANCE.getTileDao();
 		// sprav URL pola typu mapy
+			//tileDao.isTileCached(tile);
 		String constructedUrl = MapUtils.constructUrl(mapLayer, tile);
-		Image tileImage = new Image(constructedUrl,true);
+		System.out.println(constructedUrl);
+
+		// download urlStream
+		URL tileUrl = new URL(constructedUrl);
+		URLConnection urlConnection = new URLConnection(tileUrl) {
+			
+			@Override
+			public void connect() throws IOException {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		tileUrl.openConnection();
+		
+		InputStream inputStream = urlConnection.getInputStream();
+		
+		
+		int pushbackLimit = 100;
+		InputStream urlStream = tileUrl.openStream();
+		
+		String fileExtension = guessContentTypeFromStream(urlStream ); 
+		// Tile.setFileFormat
+		tile.setFileFormat(fileExtension);
+
+		Image tileImage = new Image(constructedUrl);
+		
+		
+		Tile tileDownloaded = TileUtils.saveTile(tileImage, tile, user.getCacheFolderPath());
+		if(!tileDownloaded.getCachedLocation().isEmpty()) {
+			tileDao.save(tileDownloaded, user, mapLayer);
+		}else {
+			// generate tileImage 404
+		}
 		return tileImage;
 	}
 
@@ -62,7 +101,7 @@ public class LoadWebMap implements Map {
 			// is tile downloaded
 			if (!MapUtils.isTileDownloaded(tile, tempPath)) {
 				// save images
-				String tileCachePath = tempPath + tile.getZoom() + "/" + tile.getLongitude() + "/" + tile.getLatitude();
+				String tileCachePath = tempPath + "/" +  tile.getZoom() + "/" + tile.getLongitude() + "/" + tile.getLatitude();
 				File outputFile = new File(tileCachePath);
 				 
 				Image tileImage = getTile(tile);
