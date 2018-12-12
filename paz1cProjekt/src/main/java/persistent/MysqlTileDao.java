@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
@@ -37,7 +39,7 @@ public class MysqlTileDao implements TileDao {
 			simpleJdbcInsert.usingGeneratedKeyColumns("id");
 
 			simpleJdbcInsert.usingColumns("longitude", "latitude", "zoom", "map_layer_id", "map_layer_users_id",
-					"map_layer_users_id", "thumbnail", "cachedLocation", "fileFormat");
+					"thumbnail", "cachedLocation", "fileFormat");
 			Map<String, Object> hodnoty = new HashMap<>();
 			hodnoty.put("longitude", tile.getLongitude());
 			hodnoty.put("latitude", tile.getLatitude());
@@ -58,9 +60,18 @@ public class MysqlTileDao implements TileDao {
 	}
 
 	@Override
-	public boolean isTileCached(Tile tile) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isTileCached(User user, MapLayer mapLayer, Tile tile) {
+		String sql = "SELECT EXISTS ( "
+				+ "SELECT id, longitude, latitude, zoom, thumbnail, cachedLocation, fileFormat " 
+				+ "FROM tiles "
+				+ "WHERE map_layer_users_id = " + user.getId() + " AND "
+				+ "map_layer_id = " + mapLayer.getId() + " AND "
+				+ "tiles.zoom = " + tile.getZoom() + " AND "
+				+ "tiles.latitude = " + tile.getLatitude() + " AND "
+				+ "tiles.longitude = " + tile.getLongitude() +
+				" );";
+		boolean exists = jdbcTemplate.queryForObject(sql, boolean.class);
+		return exists;
 	}
 
 	@Override
@@ -70,9 +81,21 @@ public class MysqlTileDao implements TileDao {
 	}
 
 	@Override
-	public Tile getFullTile(Tile tile) {
-		// TODO Auto-generated method stub
-		return null;
+	public Tile getFullTile(User user, MapLayer mapLayer, Tile tile) {
+		String sql = "SELECT id, longitude, latitude, zoom, thumbnail, cachedLocation, fileFormat " + "FROM tiles "
+				+ "WHERE map_layer_users_id = " + user.getId() + " AND "
+				+ "map_layer_id = " + mapLayer.getId() + " AND "
+				+ "tiles.zoom = " + tile.getZoom() + " AND "
+				+ "tiles.latitude = " + tile.getLatitude() + " AND "
+				+ "tiles.longitude = " + tile.getLongitude();
+		Tile cachedTile;
+		try {
+			cachedTile = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Tile.class));
+			return cachedTile;
+		} catch (EmptyResultDataAccessException e) {
+			// e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override

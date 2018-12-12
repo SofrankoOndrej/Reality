@@ -96,27 +96,37 @@ public class TileUtils {
 	public static Tile saveTile(Image image, Tile tile, String cacheFolderPath) {
 		String constructedFolderPath = constructFolderPath(tile, cacheFolderPath);
 		File folder = new File(constructedFolderPath);
-		String fileExtension = tile.getFileFormat() == null ? "" : tile.getFileFormat();
-		String constructedFilePath = constructFilePath(tile, cacheFolderPath) + fileExtension;
+		String constructedFilePath = constructFilePath(tile, cacheFolderPath);
 		File file = new File(constructedFilePath);
-		
-		boolean directoriesCreated = folder.mkdirs();
-		boolean fileSaved = isTileDownloaded(tile, cacheFolderPath);
-		if (directoriesCreated && !fileSaved) {
-				try {
-					ImageIO.write(SwingFXUtils.fromFXImage(image, null), tile.getFileFormat(), file);
+
+		boolean directoriesCreated = folder.mkdirs() || folder.exists();
+		boolean fileAlreadySaved = isTileDownloaded(tile, cacheFolderPath);
+		// do if tile does NOT have cache location in database
+		if(tile.getCachedLocation() == null) {
+			tile.setCachedLocation(constructedFilePath);
+		}
+		// if the file is not saved -> write to file
+		if (directoriesCreated && !fileAlreadySaved) {
+			try {
+				if (ImageIO.write(SwingFXUtils.fromFXImage(image, null), tile.getFileFormat(), file)) {
 					tile.setCachedLocation(constructedFilePath);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-				System.out.println(constructedFilePath);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(constructedFilePath);
 		}
 
 		return tile;
 
 	}
-
+	
+	public static Image readTileFromDisk(Tile tile) {
+		Image tileImage = new Image("file:///" + tile.getCachedLocation());
+		return tileImage;
+	}
+	
 	public static boolean isTileDownloaded(Tile tile, String cacheFolderPath) {
 		String filePath = constructFilePath(tile, cacheFolderPath);
 		File tileFile = new File(filePath);
@@ -146,6 +156,8 @@ public class TileUtils {
 			sb.append("\\");
 		}
 		sb.append(tile.getLatitude());
+		sb.append(".");
+		sb.append(tile.getFileFormat());
 
 		return sb.toString();
 	}
