@@ -19,8 +19,8 @@ public class TileUtils {
 		return mercXY;
 	}
 
-	public static Integer[] gloge2tile(double longitude, double latitude) {
-		Integer tileXY[] = new Integer[2];
+	public static int[] gloge2tile(double longitude, double latitude) {
+		int tileXY[] = new int[2];
 		double x = (longitude + 180) / 360;
 
 		double sinLatitude = Math.sin(latitude * Math.PI / 180);
@@ -32,8 +32,8 @@ public class TileUtils {
 	}
 
 //	%% prevod z mercator na suradnice
-	public static Double[] mercator2globe(Double mercX, Double mercY) {
-		Double globeXY[] = new Double[2];
+	public static double[] mercator2globe(double mercX, double mercY) {
+		double globeXY[] = new double[2];
 		globeXY[0] = (mercX / 20037508.34) * 180;
 		globeXY[1] = (mercY / 20037508.34) * 180;
 		globeXY[1] = 180 / Math.PI * (2 * Math.atan(Math.exp(globeXY[1] * Math.PI / 180)) - Math.PI / 2);
@@ -41,8 +41,8 @@ public class TileUtils {
 		return globeXY;
 	}
 
-	public static Integer[] mercator2pixel(Double mercX, Double mercY, int zoomLevel) {
-		Integer[] pixelXY = new Integer[2];
+	public static int[] mercator2pixel(double mercX, double mercY, int zoomLevel) {
+		int[] pixelXY = new int[2];
 //		% prevod na zemepisne suradnice: sirka, dlzka
 		double longitude = (mercX / 20037508.34) * 180;
 		double latitude = (mercY / 20037508.34) * 180;
@@ -57,6 +57,41 @@ public class TileUtils {
 		pixelXY[1] = (int) Math.round(y * mapSize);
 
 		return pixelXY;
+	}
+
+	public static int[] globe2pixel(double longitude, double latitude, int zoomLevel) {
+		int[] pixelXY = new int[2];
+//		% prevod zo zemepisnych suradnic na polohu v obdlzniku mercatoru
+		double x = (longitude + 180) / 360;
+		double sinLatitude = Math.sin(latitude * Math.PI / 180);
+		double y = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI));
+		int mapSize = 256 * 2 ^ zoomLevel;
+//		% vzdialenost v pixeloch od pociatku suradnicovej sustavy (lavy horny roh)
+		pixelXY[0] = (int) Math.round(x * mapSize);
+		pixelXY[1] = (int) Math.round(y * mapSize);
+
+		return pixelXY;
+	}
+
+	/*
+	 * returns geo location of mercator pixel at specified zoom level
+	 */
+	public static double[] pixel2globe(int x, int y, int zoom) {
+		double globe[] = new double[2];
+		// implement zoom level of map
+		int mapSize = 256 * 2 ^ zoom;
+		// mercator position to interval <0,1>
+		double xDouble = 1.0 * x / mapSize;
+		double yDouble = 1.0 * y / mapSize;
+
+		// mercator position in interval <0,1>
+		// longitude
+		globe[0] = 360 * xDouble - 180;
+		// latitude
+		double eLat = Math.exp(4 * Math.PI * (0.5 - yDouble));
+		globe[1] = 180 / Math.PI * Math.asin((eLat - 1) / (eLat + 1));
+
+		return globe;
 	}
 
 	public static int[] mercator2tile(double mercatorX, double mercatorY, int zoomLevel) {
@@ -75,6 +110,11 @@ public class TileUtils {
 		tileXY[1] = (int) Math.floor(y * mapSize);
 
 		return tileXY;
+	}
+
+	public static int[] tile2pixel(Tile tile) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public static Integer[] pixel(double latitude, double longitude) {
@@ -102,7 +142,7 @@ public class TileUtils {
 		boolean directoriesCreated = folder.mkdirs() || folder.exists();
 		boolean fileAlreadySaved = isTileDownloaded(tile, cacheFolderPath);
 		// do if tile does NOT have cache location in database
-		if(tile.getCachedLocation() == null) {
+		if (tile.getCachedLocation() == null) {
 			tile.setCachedLocation(constructedFilePath);
 		}
 		// if the file is not saved -> write to file
@@ -121,12 +161,12 @@ public class TileUtils {
 		return tile;
 
 	}
-	
+
 	public static Image readTileFromDisk(Tile tile) {
 		Image tileImage = new Image("file:///" + tile.getCachedLocation());
 		return tileImage;
 	}
-	
+
 	public static boolean isTileDownloaded(Tile tile, String cacheFolderPath) {
 		String filePath = constructFilePath(tile, cacheFolderPath);
 		File tileFile = new File(filePath);

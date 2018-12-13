@@ -25,6 +25,7 @@ import persistent.MapLayerDao;
 import persistent.UserDao;
 import util.LoadWebMap;
 import util.MapUtils;
+import util.TileUtils;
 import util.Utils;
 
 public class MainAppController {
@@ -114,7 +115,13 @@ public class MainAppController {
 		userDao = DaoFactory.INSTANCE.getUserDao();
 		mapLayerModel = new MapLayerFxModel();
 		this.userModel = userModel;
-		// bbox = userModel.getLastBoundingBox(); // load last bbox
+		// if user does not have BBox -> use default
+		if (this.userModel.getLastBoundingBox() == null) {
+			// kosice bbox
+			String bbox = "21.148414221191,48.694094875476,21.327628698729,48.73532285334";
+			this.userModel.setLastBoundingBox(bbox);
+			this.userModel.setLastZoom(zoomSlider.getValue());
+		}
 	}
 
 	@FXML
@@ -131,7 +138,9 @@ public class MainAppController {
 		mapCanvas.widthProperty().addListener(observable -> redrawMap());
 		mapCanvas.heightProperty().addListener(observable -> redrawMap());
 
-		// bind canvas size to bbox / one way binding = bbox Update
+		// listen to changes of last bbox
+		userModel.lastBoundingBoxProperty().addListener(listener -> redrawMap());
+
 		// mapCanvas.widthProperty().addListener(listener -> updateBBox());
 		// mapCanvas.heightProperty().addListener(listener -> updateBBox());
 
@@ -247,62 +256,42 @@ public class MainAppController {
 	}
 
 	private void updateBBox() {
-		updateBBoxX();
-		updateBBoxY();
-	}
-
-	private void updateBBoxX() {
 		// get old BBOX from user
 		double[] oldBbox = MapUtils.bBoxString2DoubleArray(userModel.getLastBoundingBox());
-		double newBboxGlobe[] = new double[4];
 		// TODO zrataj vhodnu BBOX pre danu CANVAS
-
-		// update user with new BBOX
-		userModel.setLastBoundingBox(MapUtils.bBoxDoubleArray2String(newBboxGlobe));
-
-		// compute new bounding box
-		int canvasPixelHeigh;
-		// fit last bbox to canvas size + best zoom
-
 		double mapCanvasPixelHeight = mapCanvas.getHeight();
 		double mapCanvasPixelWidth = mapCanvas.getWidth();
 
-		int bboxPixelHeight;
-		int bboxPixelWidth;
+		// pixel position of old bounds center
+		int[] oldBoxCenter = TileUtils.globe2pixel(oldBbox[0] + oldBbox[2], oldBbox[1] + oldBbox[3],
+				userModel.getLastZoom());
 
-		double bboxOptimalHeight;
-		double bboxOptimalWidth;
+		// get new bbox bounds = old center +- half of canvas size
+		double[] newBboxUL = TileUtils.pixel2globe(oldBoxCenter[0] - (int) (mapCanvasPixelWidth / 2),
+				oldBoxCenter[0] - (int) (mapCanvasPixelHeight / 2), userModel.getLastZoom());
+		double[] newBboxBR = TileUtils.pixel2globe(oldBoxCenter[0] + (int) (mapCanvasPixelWidth / 2),
+				oldBoxCenter[0] + (int) (mapCanvasPixelHeight / 2), userModel.getLastZoom());
+		// write into newBboxGlobe
+		double newBboxGlobe[] = new double[4];
+		newBboxGlobe[0] = newBboxUL[0];
+		newBboxGlobe[1] = newBboxUL[1];
+		newBboxGlobe[2] = newBboxBR[0];
+		newBboxGlobe[3] = newBboxBR[1];
 
-		double bboxULx;
-		double bboxULy;
-
-		double bboxBRx;
-		double bboxBRy;
-		// set new bbox
-
-	}
-
-	private void updateBBoxY() {
-		// TODO Auto-generated method stub
-
+		// update user with new BBOX
+		userModel.setLastBoundingBox(MapUtils.bBoxDoubleArray2String(newBboxGlobe));
 	}
 
 	private void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
-		// if user does not have BBox -> use default
-		if (userModel.getLastBoundingBox() == null) {
-			// kosice bbox
-			String bbox = "21.148414221191,48.694094875476,21.327628698729,48.73532285334";
-			userModel.setLastBoundingBox(bbox);
-			userModel.setLastZoom(zoomSlider.getValue());
-		}
-		// TODO update USER bbox - odkomentuj ked bude hotove updateBBox()
-		// updateBBox();
 
-		// select used mapLayer
+		// update USER bbox
+		// TODO only if canvas size changed
+		updateBBox();
+
 		// TODO implement mapLayer slection
+		// select used mapLayer
 		List<MapLayer> mapLayers = mapLayerDao.getAll(userModel.getUser());
-
 		// select default mapLayer
 		if (!mapLayers.isEmpty()) {
 			mapLayerModel.setMapLayer(mapLayers.get(0));
@@ -313,9 +302,10 @@ public class MainAppController {
 				userModel.getLastZoom());
 		List<Tile> tileList = webMapLoader.getListOfTiles(userModel.getLastBoundingBox());
 
+		// get pixel position of mapCanvas
+		double[] pixelPositionBbox = MapUtils.bBoxString2DoubleArray(userModel.getLastBoundingBox());
 		// TODO: IMPLEMENT NEW THREAD FOR LOADING IMAGES
 		Image tileImage;
-		int i = 0;
 		
 		for (Tile tile : tileList) {
 			// get map tiles
@@ -324,12 +314,10 @@ public class MainAppController {
 			// compute shift
 
 			// set pixel position for iterated tile
-			int xPixelPosition = i * 256;
-			int yPixelPosition = 0 * 256;
+			int[] pixelPosition = TileUtils.tile2pixel(tile);
 			
-
 			// draw each tile into graphical context of canvas
-			gc.drawImage(tileImage, xPixelPosition, yPixelPosition);
+			gc.drawImage(tileImage,pixelPositionBbox[0] - pixelPosition[0], pixelPositionBbox[1] - pixelPosition[1]);
 		}
 		// draw map
 
