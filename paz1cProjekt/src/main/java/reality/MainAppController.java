@@ -18,7 +18,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
@@ -40,64 +39,44 @@ public class MainAppController {
 
 	@FXML
 	private AnchorPane mapAnchorPane;
-
 	@FXML
 	private Canvas mapCanvas;
-
 	@FXML
 	private Button changeMapLayerButton;
-
 	@FXML
 	private ScrollPane layersScrollPane;
-
 	@FXML
 	private AnchorPane layersAnchorPane;
-
 	@FXML
 	private ImageView TilePreviewImageView;
-
 	@FXML
 	private TextField inputUrlTextField;
-
 	@FXML
 	private Button previewMapTileButton;
-
 	@FXML
 	private TextField mapServerUrlTextField;
-
 	@FXML
 	private TextField mapNameTextField;
-
 	@FXML
 	private Button saveMapLayerButton;
-
 	@FXML
 	private Tab accountSettingsTab;
-
 	@FXML
 	private AnchorPane accounSettingsAnchorPane;
-
 	@FXML
 	private Button saveUserChangesButton;
-
 	@FXML
 	private TextField nameTextField;
-
 	@FXML
 	private TextField surnameTextField;
-
 	@FXML
 	private TextField emailTextField;
-
 	@FXML
 	private TextField usernameTextField;
-
 	@FXML
 	private PasswordField oldPasswordField;
-
 	@FXML
 	private PasswordField newPasswordField;
-
 	@FXML
 	private TextField cacheDirectoryTextField;
 	@FXML
@@ -109,6 +88,8 @@ public class MainAppController {
 
 	private double orgSceneX, orgSceneY;
 	private double orgTranslateX, orgTranslateY;
+	private double newTranslateX, newTranslateY;
+	private String initialBbox;
 
 	public MainAppController() {
 		mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
@@ -126,6 +107,7 @@ public class MainAppController {
 			String bbox = "21.148414221191,48.694094875476,21.327628698729,48.73532285334";
 			this.userModel.setLastBoundingBox(bbox);
 			this.userModel.setLastZoom(13);
+			initialBbox = userModel.getLastBoundingBox();
 		}
 	}
 
@@ -142,19 +124,53 @@ public class MainAppController {
 
 		// listener zmeny velkosti canvas
 		mapCanvas.widthProperty().addListener(listener -> {
-			updateBBox(0, 0);
+			updateBBox(0, 0, true);
 			// redrawMap();
 		});
 		mapCanvas.heightProperty().addListener(listener -> {
-			updateBBox(0, 0);
+			updateBBox(0, 0, true);
 //			redrawMap();
 		});
 
 		// listen to mouse gestures
 
-		mapCanvas.setOnMousePressed(mapOnMousePressedEventHandler);
+		mapCanvas.setOnMousePressed(mapOnMousePressedEventHandler -> {
+			orgSceneX = mapOnMousePressedEventHandler.getX();
+			orgSceneY = mapOnMousePressedEventHandler.getY();
+			orgTranslateX = mapCanvas.getTranslateX();
+			orgTranslateY = mapCanvas.getTranslateY();
 
-		mapCanvas.setOnMouseDragged(mapOnMouseDraggedEventHandler);
+		});
+
+		mapCanvas.setOnMouseDragged(mapOnMouseDraggedEventHandler -> {
+			double offsetX = mapOnMouseDraggedEventHandler.getX() - orgSceneX;
+			double offsetY = mapOnMouseDraggedEventHandler.getY() - orgSceneY;
+			newTranslateX = orgTranslateX + offsetX;
+			newTranslateY = orgTranslateY + offsetY;
+			// System.out.println(newTranslateX + ", " + newTranslateY);
+			// System.out.println(initialBbox);
+			updateBBox((int) -newTranslateX, (int) -newTranslateY, false);
+		});
+
+		mapCanvas.setOnMouseReleased(mapOnMouseDragRealesedEventHandler -> {
+			// System.out.println("UPDATED: " + newTranslateX + ", " + newTranslateY);
+			// System.out.println(initialBbox);
+			updateBBox((int) -newTranslateX, (int) -newTranslateY, true);
+			newTranslateX = 0;
+			newTranslateY = 0;
+		});
+
+		mapCanvas.setOnScroll(scrollEventHandler -> {
+			double pixelsToScroll = scrollEventHandler.getDeltaY() / scrollEventHandler.getMultiplierY();
+			userModel.setLastZoom(userModel.getLastZoom() + pixelsToScroll);
+			if (userModel.getLastZoom() < 10) {
+				userModel.setLastZoom(10);
+			}
+			if (userModel.getLastZoom() > 18) {
+				userModel.setLastZoom(18);
+			}
+
+		});
 
 		// listen to changes of last bbox
 		userModel.lastBoundingBoxProperty().addListener(listener -> redrawMap());
@@ -165,7 +181,7 @@ public class MainAppController {
 		// zoom binding
 		zoomSlider.valueProperty().bindBidirectional(userModel.lastZoomProperty());
 		zoomSlider.valueProperty().addListener(listener -> {
-			updateBBox(0, 0);
+			updateBBox(0, 0, true);
 			// redrawMap();
 		});
 		// zoomSlider.valueProperty().addListener(listener -> updateBBox());
@@ -276,40 +292,9 @@ public class MainAppController {
 		});
 	}
 
-	/*
-	 * eventHandlery zo zdroja:
-	 * http://java-buddy.blogspot.com/2013/07/javafx-drag-and-move-something.html
-	 */
-	EventHandler<MouseEvent> mapOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
-
-		@Override
-		public void handle(MouseEvent t) {
-			orgSceneX = t.getX();
-			orgSceneY = t.getY();
-			orgTranslateX = ((Canvas) (t.getSource())).getTranslateX();
-			orgTranslateY = ((Canvas) (t.getSource())).getTranslateY();
-		}
-	};
-
-	EventHandler<MouseEvent> mapOnMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
-
-		@Override
-		public void handle(MouseEvent t) {
-			double offsetX = t.getX();
-			double offsetY = t.getY();
-			double newTranslateX = offsetX;
-			double newTranslateY = offsetY;
-			
-			System.out.println(newTranslateX + ", " + newTranslateY);
-			updateBBox((int) -newTranslateX, (int) -newTranslateY);
-//			((Canvas) (t.getSource())).setTranslateX(newTranslateX);
-//			((Canvas) (t.getSource())).setTranslateY(newTranslateY);
-		}
-	};
-
-	private void updateBBox(int xShift, int yShift) {
+	private void updateBBox(int xShift, int yShift, boolean update) {
 		// get old BBOX from user
-		double[] oldBbox = MapUtils.bBoxString2DoubleArray(userModel.getLastBoundingBox());
+		double[] oldBbox = MapUtils.bBoxString2DoubleArray(initialBbox);
 		// TODO zrataj vhodnu BBOX pre danu CANVAS
 		double mapCanvasPixelHeight = mapCanvas.getHeight();
 		double mapCanvasPixelWidth = mapCanvas.getWidth();
@@ -332,6 +317,10 @@ public class MainAppController {
 
 		// update user with new BBOX
 		userModel.setLastBoundingBox(MapUtils.bBoxDoubleArray2String(newBboxGlobe));
+		if (update) {
+			initialBbox = MapUtils.bBoxDoubleArray2String(newBboxGlobe);
+			// System.out.println("UPDATED initial bbox: " + initialBbox);
+		}
 	}
 
 	private void redrawMap() {
