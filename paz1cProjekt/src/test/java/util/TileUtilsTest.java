@@ -18,4 +18,20 @@ public class TileUtilsTest {
 		assertEquals(4580, tileNumbers[0]);
 		assertEquals(2823, tileNumbers[1]);
 	}
+	
+	@Test 
+	void globe2Pixel() {
+		int[] pixel = TileUtils.globe2pixel(10, 20, 13);
+		double[] globe = TileUtils.pixel2globe(pixel[0], pixel[1], 13);
+		
+		assertEquals(20, globe[1]);
+	}
+	
+	@Test 
+	void pixel2globe() {
+		
+		double[] globe = TileUtils.pixel2globe(10000, 1000, 13);
+		int[] pixel = TileUtils.globe2pixel(globe[0], globe[1], 13);
+		assertEquals(10000, pixel[0]);
+	}
 }

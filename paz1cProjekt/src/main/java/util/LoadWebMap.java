@@ -3,6 +3,7 @@ package util;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -48,7 +49,7 @@ public class LoadWebMap implements Map {
 		} else {
 			// sprav URL pola typu mapy
 			String constructedUrl = MapUtils.constructUrl(mapLayer, tile);
-			System.out.println(constructedUrl);
+			//System.out.println(constructedUrl);
 
 			// url connection is used so I can peak into inputStream and get content type -
 			// image file extension
@@ -79,7 +80,7 @@ public class LoadWebMap implements Map {
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("tile not found: " + constructedUrl);
 			}
 		}
 		// v pripade ak nastane vynimka

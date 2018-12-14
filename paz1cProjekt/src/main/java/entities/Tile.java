@@ -2,6 +2,12 @@ package entities;
 
 public class Tile {
 
+	@Override
+	public String toString() {
+		return "Tile [longitude=" + longitude + ", latitude=" + latitude + ", zoom=" + zoom + ", cachedLocation="
+				+ cachedLocation + "]";
+	}
+
 	private Long id;
 	private int longitude; // x
 	private int latitude; // y

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import entities.MapLayer;
 import entities.Tile;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,6 +18,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
@@ -105,6 +107,9 @@ public class MainAppController {
 	@FXML
 	private Slider zoomSlider;
 
+	private double orgSceneX, orgSceneY;
+	private double orgTranslateX, orgTranslateY;
+
 	public MainAppController() {
 		mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
 		mapLayerModel = new MapLayerFxModel();
@@ -120,7 +125,7 @@ public class MainAppController {
 			// kosice bbox
 			String bbox = "21.148414221191,48.694094875476,21.327628698729,48.73532285334";
 			this.userModel.setLastBoundingBox(bbox);
-			this.userModel.setLastZoom(zoomSlider.getValue());
+			this.userModel.setLastZoom(13);
 		}
 	}
 
@@ -133,20 +138,36 @@ public class MainAppController {
 		// automatic resize of canvas
 		mapCanvas.widthProperty().bind(mapAnchorPane.widthProperty());
 		mapCanvas.heightProperty().bind(mapAnchorPane.heightProperty());
+		// mapCanvas.widthProperty().bind(mapCanvas.heightProperty());
 
 		// listener zmeny velkosti canvas
-		mapCanvas.widthProperty().addListener(observable -> redrawMap());
-		mapCanvas.heightProperty().addListener(observable -> redrawMap());
+		mapCanvas.widthProperty().addListener(listener -> {
+			updateBBox(0, 0);
+			// redrawMap();
+		});
+		mapCanvas.heightProperty().addListener(listener -> {
+			updateBBox(0, 0);
+//			redrawMap();
+		});
+
+		// listen to mouse gestures
+
+		mapCanvas.setOnMousePressed(mapOnMousePressedEventHandler);
+
+		mapCanvas.setOnMouseDragged(mapOnMouseDraggedEventHandler);
 
 		// listen to changes of last bbox
 		userModel.lastBoundingBoxProperty().addListener(listener -> redrawMap());
-
+		userModel.lastZoomProperty().addListener(listener -> redrawMap());
 		// mapCanvas.widthProperty().addListener(listener -> updateBBox());
 		// mapCanvas.heightProperty().addListener(listener -> updateBBox());
 
 		// zoom binding
 		zoomSlider.valueProperty().bindBidirectional(userModel.lastZoomProperty());
-		zoomSlider.valueProperty().addListener(listener -> redrawMap());
+		zoomSlider.valueProperty().addListener(listener -> {
+			updateBBox(0, 0);
+			// redrawMap();
+		});
 		// zoomSlider.valueProperty().addListener(listener -> updateBBox());
 
 		// mapLayer binding to map model
@@ -255,7 +276,38 @@ public class MainAppController {
 		});
 	}
 
-	private void updateBBox() {
+	/*
+	 * eventHandlery zo zdroja:
+	 * http://java-buddy.blogspot.com/2013/07/javafx-drag-and-move-something.html
+	 */
+	EventHandler<MouseEvent> mapOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
+
+		@Override
+		public void handle(MouseEvent t) {
+			orgSceneX = t.getX();
+			orgSceneY = t.getY();
+			orgTranslateX = ((Canvas) (t.getSource())).getTranslateX();
+			orgTranslateY = ((Canvas) (t.getSource())).getTranslateY();
+		}
+	};
+
+	EventHandler<MouseEvent> mapOnMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
+
+		@Override
+		public void handle(MouseEvent t) {
+			double offsetX = t.getX();
+			double offsetY = t.getY();
+			double newTranslateX = offsetX;
+			double newTranslateY = offsetY;
+			
+			System.out.println(newTranslateX + ", " + newTranslateY);
+			updateBBox((int) -newTranslateX, (int) -newTranslateY);
+//			((Canvas) (t.getSource())).setTranslateX(newTranslateX);
+//			((Canvas) (t.getSource())).setTranslateY(newTranslateY);
+		}
+	};
+
+	private void updateBBox(int xShift, int yShift) {
 		// get old BBOX from user
 		double[] oldBbox = MapUtils.bBoxString2DoubleArray(userModel.getLastBoundingBox());
 		// TODO zrataj vhodnu BBOX pre danu CANVAS
@@ -263,14 +315,14 @@ public class MainAppController {
 		double mapCanvasPixelWidth = mapCanvas.getWidth();
 
 		// pixel position of old bounds center
-		int[] oldBoxCenter = TileUtils.globe2pixel(oldBbox[0] + oldBbox[2], oldBbox[1] + oldBbox[3],
+		int[] oldBoxCenter = TileUtils.globe2pixel((oldBbox[0] + oldBbox[2]) / 2.0, (oldBbox[1] + oldBbox[3]) / 2.0,
 				userModel.getLastZoom());
 
-		// get new bbox bounds = old center +- half of canvas size
-		double[] newBboxUL = TileUtils.pixel2globe(oldBoxCenter[0] - (int) (mapCanvasPixelWidth / 2),
-				oldBoxCenter[0] - (int) (mapCanvasPixelHeight / 2), userModel.getLastZoom());
-		double[] newBboxBR = TileUtils.pixel2globe(oldBoxCenter[0] + (int) (mapCanvasPixelWidth / 2),
-				oldBoxCenter[0] + (int) (mapCanvasPixelHeight / 2), userModel.getLastZoom());
+		// get new bbox bounds = old center +- half of canvas size, + x/y shift
+		double[] newBboxUL = TileUtils.pixel2globe(oldBoxCenter[0] - (int) (mapCanvasPixelWidth / 2) + xShift,
+				oldBoxCenter[1] - (int) (mapCanvasPixelHeight / 2) + yShift, userModel.getLastZoom());
+		double[] newBboxBR = TileUtils.pixel2globe(oldBoxCenter[0] + (int) (mapCanvasPixelWidth / 2) + xShift,
+				oldBoxCenter[1] + (int) (mapCanvasPixelHeight / 2) + yShift, userModel.getLastZoom());
 		// write into newBboxGlobe
 		double newBboxGlobe[] = new double[4];
 		newBboxGlobe[0] = newBboxUL[0];
@@ -284,10 +336,6 @@ public class MainAppController {
 
 	private void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
-
-		// update USER bbox
-		// TODO only if canvas size changed
-		updateBBox();
 
 		// TODO implement mapLayer slection
 		// select used mapLayer
@@ -303,10 +351,12 @@ public class MainAppController {
 		List<Tile> tileList = webMapLoader.getListOfTiles(userModel.getLastBoundingBox());
 
 		// get pixel position of mapCanvas
-		double[] pixelPositionBbox = MapUtils.bBoxString2DoubleArray(userModel.getLastBoundingBox());
+		double[] globePositionBbox = MapUtils.bBoxString2DoubleArray(userModel.getLastBoundingBox());
+		int[] pixelPositionBbox = TileUtils.globe2pixel(globePositionBbox[0], globePositionBbox[1],
+				userModel.getLastZoom());
+
 		// TODO: IMPLEMENT NEW THREAD FOR LOADING IMAGES
 		Image tileImage;
-		
 		for (Tile tile : tileList) {
 			// get map tiles
 			tileImage = webMapLoader.getTile(tile);
@@ -315,12 +365,15 @@ public class MainAppController {
 
 			// set pixel position for iterated tile
 			int[] pixelPosition = TileUtils.tile2pixel(tile);
-			
-			// draw each tile into graphical context of canvas
-			gc.drawImage(tileImage,pixelPositionBbox[0] - pixelPosition[0], pixelPositionBbox[1] - pixelPosition[1]);
-		}
-		// draw map
 
+			int xPosition = pixelPosition[0] - pixelPositionBbox[0];// + (int) mapCanvas.getWidth();
+			int yPosition = pixelPosition[1] - pixelPositionBbox[1];// + (int) mapCanvas.getHeight();
+			// draw each tile into graphical context of canvas
+			// System.out.println(tile.toString() + "x position: " + xPosition + "; y
+			// position: " + yPosition);
+
+			gc.drawImage(tileImage, xPosition, yPosition);
+		}
 		mapCanvas.setViewOrder(1);
 	}
 

@@ -20,7 +20,7 @@ public class MapUtils {
 		// iterate through whole tile region
 		for (int longitude = upperLeftTileNumbers[0]; longitude <= upperBottomRightNumbers[0]; longitude++) {
 // vyries v ktorom smere treba iterovat
-			for (int latitude = upperLeftTileNumbers[1]; latitude >= upperBottomRightNumbers[1]; latitude--) {
+			for (int latitude = upperLeftTileNumbers[1]; latitude <= upperBottomRightNumbers[1]; latitude++) {
 				// create tile
 				Tile tileToAdd = new Tile();
 				tileToAdd.setLongitude(longitude);

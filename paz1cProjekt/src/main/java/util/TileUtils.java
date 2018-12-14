@@ -25,7 +25,9 @@ public class TileUtils {
 
 		double sinLatitude = Math.sin(latitude * Math.PI / 180);
 		double y = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI));
-		long mapSize = 2 ^ 18;
+		int tileSize = 256;
+		int zoom = 14;
+		int mapSize = tileSize * (int) Math.pow(2, zoom);
 		tileXY[0] = (int) Math.floor(x * mapSize + 0.5);
 		tileXY[1] = (int) Math.floor(y * mapSize + 0.5);
 		return tileXY;
@@ -41,7 +43,7 @@ public class TileUtils {
 		return globeXY;
 	}
 
-	public static int[] mercator2pixel(double mercX, double mercY, int zoomLevel) {
+	public static int[] mercator2pixel(double mercX, double mercY, int zoom) {
 		int[] pixelXY = new int[2];
 //		% prevod na zemepisne suradnice: sirka, dlzka
 		double longitude = (mercX / 20037508.34) * 180;
@@ -51,21 +53,8 @@ public class TileUtils {
 		double x = (longitude + 180) / 360;
 		double sinLatitude = Math.sin(latitude * Math.PI / 180);
 		double y = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI));
-		int mapSize = 256 * 2 ^ zoomLevel;
-//		% vzdialenost v pixeloch od pociatku suradnicovej sustavy (lavy horny roh)
-		pixelXY[0] = (int) Math.round(x * mapSize);
-		pixelXY[1] = (int) Math.round(y * mapSize);
-
-		return pixelXY;
-	}
-
-	public static int[] globe2pixel(double longitude, double latitude, int zoomLevel) {
-		int[] pixelXY = new int[2];
-//		% prevod zo zemepisnych suradnic na polohu v obdlzniku mercatoru
-		double x = (longitude + 180) / 360;
-		double sinLatitude = Math.sin(latitude * Math.PI / 180);
-		double y = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI));
-		int mapSize = 256 * 2 ^ zoomLevel;
+		int tileSize = 256;
+		int mapSize = tileSize * (int) Math.pow(2, zoom);
 //		% vzdialenost v pixeloch od pociatku suradnicovej sustavy (lavy horny roh)
 		pixelXY[0] = (int) Math.round(x * mapSize);
 		pixelXY[1] = (int) Math.round(y * mapSize);
@@ -74,22 +63,45 @@ public class TileUtils {
 	}
 
 	/*
-	 * returns geo location of mercator pixel at specified zoom level
+	 * returns pixel location, of geo location, in mercator projection at specified
+	 * zoom. Tile size is set to 256 px
+	 */
+	public static int[] globe2pixel(double longitude, double latitude, int zoom) {
+		int[] pixelXY = new int[2];
+//		% prevod zo zemepisnych suradnic na polohu v obdlzniku mercatoru
+		double x = (longitude + 180) / 360;
+		double sinLatitude = Math.sin(latitude * Math.PI / 180);
+		double y = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI));
+		// pixel velkost mapy
+		int tileSize = 256;
+		int mapSize = tileSize * (int) Math.pow(2, zoom);
+//		% vzdialenost v pixeloch od pociatku suradnicovej sustavy (lavy horny roh)
+		pixelXY[0] = (int) Math.round(x * mapSize);
+		pixelXY[1] = (int) Math.round(y * mapSize);
+
+		return pixelXY;
+	}
+
+	/*
+	 * returns geo location of mercator pixel at specified zoom level. Tile size is
+	 * set to 256 px
 	 */
 	public static double[] pixel2globe(int x, int y, int zoom) {
 		double globe[] = new double[2];
 		// implement zoom level of map
-		int mapSize = 256 * 2 ^ zoom;
+		int tileSize = 256;
+		int mapSize = tileSize * (int) Math.pow(2, zoom);
 		// mercator position to interval <0,1>
 		double xDouble = 1.0 * x / mapSize;
 		double yDouble = 1.0 * y / mapSize;
 
 		// mercator position in interval <0,1>
 		// longitude
-		globe[0] = 360 * xDouble - 180;
+		int roundOff = 100000;
+		globe[0] = (double) Math.round((360 * xDouble - 180) * roundOff) / roundOff;
 		// latitude
 		double eLat = Math.exp(4 * Math.PI * (0.5 - yDouble));
-		globe[1] = 180 / Math.PI * Math.asin((eLat - 1) / (eLat + 1));
+		globe[1] = (double) Math.round((180 / Math.PI * Math.asin((eLat - 1) / (eLat + 1))) * roundOff) / roundOff;
 
 		return globe;
 	}
@@ -113,24 +125,10 @@ public class TileUtils {
 	}
 
 	public static int[] tile2pixel(Tile tile) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static Integer[] pixel(double latitude, double longitude) {
-		Integer[] pixelXY = new Integer[2];
-		// pixel v dlazdici
-		double x = (longitude + 180) / 360;
-		double sinLatitude = Math.sin(latitude * Math.PI / 180);
-		double y = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI));
-
-		double mapSize = 2 ^ 18;
-		int tileX = (int) Math.floor(x * mapSize + 0.5);
-		int tileY = (int) Math.floor(y * mapSize + 0.5);
-		pixelXY[0] = (int) Math.round((x * mapSize + 0.5) * 256) - tileX * 256;
-		pixelXY[1] = (int) (mapSize * 256 - Math.round((y * mapSize + 0.5) * 256) - tileY * 256); // opacny smer
-
-		return pixelXY;
+		int[] pixel = new int[2];
+		pixel[0] = tile.getLongitude() * 256;
+		pixel[1] = tile.getLatitude() * 256;
+		return pixel;
 	}
 
 	public static Tile saveTile(Image image, Tile tile, String cacheFolderPath) {
@@ -155,7 +153,7 @@ public class TileUtils {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(constructedFilePath);
+			//System.out.println(constructedFilePath);
 		}
 
 		return tile;
