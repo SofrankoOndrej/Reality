@@ -1,3 +1,24 @@
+kosice GPS
+x=21.29579&y=48.70644
+https://static.mapy.hiking.sk/topo/13/4580/2823.png
+
+Kataster tiles
+https://zbgis.skgeodesy.sk/zbgis/rest/services/Uzemnospravne_clenenie/MapServer/identify?f=json&geometryType=esriGeometryPoint&returnGeometry=false&tolerance=0&sr=3857&layers=all:1&mapExtent=2591415.829629638,6453182.653978398,1756723.4807555552,6181678.329509465&imageDisplay=1365,444,96&geometry={"x":2174069.655192597,"y":6317430.491743932}
+https://zbgis.skgeodesy.sk/zbgis/rest/services/ZBGIS/MapServer/tile/7/43/69
+
+nehnutelnosti
+https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?bm=zbgis&z=13&c=21.247730,48.715297&sc=n#
+https://kataster.skgeodesy.sk/eskn/rest/services/VRM/kn_cache/MapServer/tile/13/2821/4582
+https://kataster.skgeodesy.sk/eskn/rest/services/VRM/uo_cache/MapServer/tile/13/2821/4578
+
+https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/13/2823/4575
+https://services.arcgisonline.com/arcgis/rest/services/Elevation/World_Hillshade/MapServer/tile/13/2821/4581
+https://server.arcgisonline.com/arcgis/rest/services/Elevation/World_Hillshade/MapServer/tile/13/2822/4581
+https://zbgis.skgeodesy.sk/zbgis/rest/services/DMR/MapServer/tile/13/2823/4581
+
+ortofoto
+https://zbgis.skgeodesy.sk/zbgis/rest/services/Ortofoto/MapServer/tile/13/2823/4583
+
 
 Automatic resize of canvas: 
 https://stackoverflow.com/questions/23449932/javafx-resize-canvas-when-screen-is-resized
@@ -19,6 +40,12 @@ https://o7planning.org/en/11129/javafx-filechooser-and-directorychooser-tutorial
 cadastral data ODATA overview - metadata
 https://kataster.skgeodesy.sk/PortalOData/$metadata
 
-kosice GPS
-x=21.29579&y=48.70644
-https://static.mapy.hiking.sk/topo/13/4580/2823.png
+accept all certificates
+https://stackoverflow.com/questions/10135074/download-file-from-https-server-using-java
+
+tab pane injection - separate fxml + controllers for each tab
+https://stackoverflow.com/questions/39164050/javafx-8-tabpanes-and-tabs-with-separate-fxml-and-controllers-for-each-tab
+
+openWiki
+https://c.tiles.mapbox.com/v4/mapquest.osm-vivid-v7/5/11/11.png?access_token=pk.eyJ1IjoibWFwcXVlc3QiLCJhIjoiY2Q2N2RlMmNhY2NiZTRkMzlmZjJmZDk0NWU0ZGJlNTMifQ.mPRiEubbajc6a5y9ISgydg
+

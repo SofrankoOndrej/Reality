@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import entities.MapLayer;
 import entities.Tile;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -131,14 +132,14 @@ public class TileUtils {
 		return pixel;
 	}
 
-	public static Tile saveTile(Image image, Tile tile, String cacheFolderPath) {
-		String constructedFolderPath = constructFolderPath(tile, cacheFolderPath);
+	public static Tile saveTile(Image image, Tile tile, String cacheFolderPath, String mapLayerName) {
+		String constructedFolderPath = constructFolderPath(tile, cacheFolderPath, mapLayerName);
 		File folder = new File(constructedFolderPath);
-		String constructedFilePath = constructFilePath(tile, cacheFolderPath);
+		String constructedFilePath = constructFilePath(tile, cacheFolderPath, mapLayerName);
 		File file = new File(constructedFilePath);
 
 		boolean directoriesCreated = folder.mkdirs() || folder.exists();
-		boolean fileAlreadySaved = isTileDownloaded(tile, cacheFolderPath);
+		boolean fileAlreadySaved = isTileDownloaded(tile, cacheFolderPath,mapLayerName);
 		// do if tile does NOT have cache location in database
 		if (tile.getCachedLocation() == null) {
 			tile.setCachedLocation(constructedFilePath);
@@ -153,7 +154,7 @@ public class TileUtils {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//System.out.println(constructedFilePath);
+			// System.out.println(constructedFilePath);
 		}
 
 		return tile;
@@ -165,19 +166,23 @@ public class TileUtils {
 		return tileImage;
 	}
 
-	public static boolean isTileDownloaded(Tile tile, String cacheFolderPath) {
-		String filePath = constructFilePath(tile, cacheFolderPath);
+	public static boolean isTileDownloaded(Tile tile, String cacheFolderPath, String mapLayerName) {
+		String filePath = constructFilePath(tile, cacheFolderPath,mapLayerName);
 		File tileFile = new File(filePath);
 
 		return tileFile.exists() && !tileFile.isDirectory();
 	}
 
-	public static String constructFolderPath(Tile tile, String cacheFolderPath) {
+	public static String constructFolderPath(Tile tile, String cacheFolderPath, String mapLayerName) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(cacheFolderPath);
 		if (!cacheFolderPath.endsWith("\\")) {
 			sb.append("\\");
 		}
+		// get mapLayer name from tile
+		sb.append(mapLayerName);
+		sb.append("\\");
+		// tile coordinates
 		sb.append(tile.getZoom());
 		sb.append("\\");
 		sb.append(tile.getLongitude());
@@ -187,12 +192,13 @@ public class TileUtils {
 
 	}
 
-	public static String constructFilePath(Tile tile, String cacheFolderPath) {
+	public static String constructFilePath(Tile tile, String cacheFolderPath,String mapLayerName) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(constructFolderPath(tile, cacheFolderPath));
+		sb.append(constructFolderPath(tile, cacheFolderPath,mapLayerName));
 		if (!sb.toString().endsWith("\\")) {
 			sb.append("\\");
 		}
+		// append tile name + file extension
 		sb.append(tile.getLatitude());
 		sb.append(".");
 		sb.append(tile.getFileFormat());

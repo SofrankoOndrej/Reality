@@ -3,7 +3,6 @@ package util;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -11,6 +10,10 @@ import java.net.URLConnection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import entities.MapLayer;
 import entities.Tile;
@@ -27,6 +30,7 @@ public class LoadWebMap implements Map {
 	private User user;
 	private int zoom;
 	private TileDao tileDao = DaoFactory.INSTANCE.getTileDao();
+	// private MapLayerDao mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
 
 	public LoadWebMap(User user, MapLayer mapLayer, int zoom) {
 		this.mapLayer = mapLayer;
@@ -42,17 +46,42 @@ public class LoadWebMap implements Map {
 		Image tileImage = null;
 		if (isTileCached) {
 			// get tile cache location from database
-			tile = tileDao.getFullTile(user,mapLayer,tile);
+			tile = tileDao.getFullTile(user, mapLayer, tile);
 			// read tile from disk
 			tileImage = TileUtils.readTileFromDisk(tile);
 			return tileImage;
 		} else {
-			// sprav URL pola typu mapy
-			String constructedUrl = MapUtils.constructUrl(mapLayer, tile);
-			//System.out.println(constructedUrl);
+			// TRUST ALL CERTIFICATES
+			/*
+			 * SOURCE
+			 * https://stackoverflow.com/questions/10135074/download-file-from-https-server-
+			 * using-java
+			 */
+			// Create a new trust manager that trust all certificates
+			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+				public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+
+				public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+				}
+
+				public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+				}
+			} };
+
+			// Activate the new trust manager
+			try {
+				SSLContext sc = SSLContext.getInstance("SSL");
+				sc.init(null, trustAllCerts, new java.security.SecureRandom());
+				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			} catch (Exception e) {
+			}
 
 			// url connection is used so I can peak into inputStream and get content type -
 			// image file extension
+			// sprav URL pola typu mapy
+			String constructedUrl = MapUtils.constructUrl(mapLayer, tile);
 			try {
 				// download urlStream
 				URL tileUrl = new URL(constructedUrl);
@@ -70,7 +99,8 @@ public class LoadWebMap implements Map {
 				}
 
 				tileImage = new Image(tileInputStream);
-				Tile tileDownloaded = TileUtils.saveTile(tileImage, tile, user.getCacheFolderPath());
+				Tile tileDownloaded = TileUtils.saveTile(tileImage, tile, user.getCacheFolderPath(),
+						mapLayer.getName());
 				if (!(tileDownloaded.getCachedLocation() == null)) {
 					tileDao.save(tileDownloaded, user, mapLayer);
 				} else {
@@ -108,7 +138,7 @@ public class LoadWebMap implements Map {
 		}
 		for (Tile tile : tiles) {
 			// is tile downloaded
-			if (!TileUtils.isTileDownloaded(tile, tempPath)) {
+			if (!TileUtils.isTileDownloaded(tile, tempPath, mapLayer.getName())) {
 				// save images
 				String tileCachePath = tempPath + "/" + tile.getZoom() + "/" + tile.getLongitude() + "/"
 						+ tile.getLatitude();

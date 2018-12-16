@@ -52,11 +52,11 @@ public class CreateUserController {
 			String pwHash = BCrypt.hashpw(createdUserModel.getPassword(), salt);
 			createdUserModel.setPassword(pwHash);
 
-			// over dostupnost pouzivatelskeho mena
+			// TODO over dostupnost pouzivatelskeho mena
 
-			// over ci je pouzita dana mailova adresa
+			// TODO over ci je pouzita dana mailova adresa
 
-			// over konzistentnost pouzivatela
+			// TODO over konzistentnost pouzivatela
 
 			// ulozenie pouzivatela
 			userDao.save(createdUserModel.getUser());

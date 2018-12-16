@@ -59,7 +59,6 @@ public class MapLayer {
 
 	@Override
 	public String toString() {
-		return "Map layer: [id: " + getId() + ", name: " + getName() + "URL: " + getMapServerUrl() + "Sample Tile URL: "
-				+ getSampleTileUrl() + " ]";
+		return getName() + ", URL: " + getMapServerUrl();
 	}
 }

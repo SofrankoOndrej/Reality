@@ -11,7 +11,22 @@ public enum DaoFactory {
 	private UserDao userDao;
 	private MapLayerDao mapLayerDao;
 	private TileDao tileDao;
+	private PropertyDao propertyDao;
+	private AddressDao addressDao;
 
+	
+	public AddressDao getAddressDao() {
+		if (addressDao == null)
+			addressDao = new MysqlAddressDao(getJdbcTemplate());
+		return addressDao;
+	}
+	
+	public PropertyDao getPropertyDao() {
+		if (propertyDao == null)
+			propertyDao = new MysqlPropertyDao(getJdbcTemplate());
+		return propertyDao;
+	}
+	
 	public UserDao getUserDao() {
 		if (userDao == null)
 			userDao = new MysqlUserDao(getJdbcTemplate());
@@ -43,5 +58,7 @@ public enum DaoFactory {
 		}
 		return jdbcTemplate;
 	}
+
+	
 
 }

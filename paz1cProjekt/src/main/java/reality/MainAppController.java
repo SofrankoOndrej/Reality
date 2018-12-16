@@ -1,26 +1,40 @@
 package reality;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import entities.MapLayer;
 import entities.Tile;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import persistent.DaoFactory;
 import persistent.MapLayerDao;
 import persistent.UserDao;
@@ -38,58 +52,94 @@ public class MainAppController {
 	// private StringProperty bbox;
 
 	@FXML
-	private AnchorPane mapAnchorPane;
-	@FXML
-	private Canvas mapCanvas;
-	@FXML
-	private Button changeMapLayerButton;
-	@FXML
-	private ScrollPane layersScrollPane;
-	@FXML
-	private AnchorPane layersAnchorPane;
-	@FXML
-	private ImageView TilePreviewImageView;
-	@FXML
-	private TextField inputUrlTextField;
-	@FXML
 	private Button previewMapTileButton;
-	@FXML
-	private TextField mapServerUrlTextField;
-	@FXML
-	private TextField mapNameTextField;
-	@FXML
-	private Button saveMapLayerButton;
-	@FXML
-	private Tab accountSettingsTab;
-	@FXML
-	private AnchorPane accounSettingsAnchorPane;
-	@FXML
-	private Button saveUserChangesButton;
-	@FXML
-	private TextField nameTextField;
-	@FXML
-	private TextField surnameTextField;
+
 	@FXML
 	private TextField emailTextField;
+
 	@FXML
-	private TextField usernameTextField;
+	private TabPane mainTabPane;
+
 	@FXML
-	private PasswordField oldPasswordField;
+	private AnchorPane accounSettingsAnchorPane;
+
 	@FXML
-	private PasswordField newPasswordField;
-	@FXML
-	private TextField cacheDirectoryTextField;
+	private TextField surnameTextField;
+
 	@FXML
 	private Button directoryPickerButton;
-	@FXML
-	private Label messageLabel;
+
 	@FXML
 	private Slider zoomSlider;
+
+	@FXML
+	private Tab mainTab;
+
+	@FXML
+	private TextField cacheDirectoryTextField;
+
+	@FXML
+	private TextField mapNameTextField;
+
+	@FXML
+	private Canvas mapCanvas;
+
+	@FXML
+	private AnchorPane mapAnchorPane;
+
+	@FXML
+	private TextField inputUrlTextField;
+
+	@FXML
+	private Tab accountSettingsTab;
+
+	@FXML
+	private PasswordField newPasswordField;
+
+	@FXML
+	private TextField nameTextField;
+
+	@FXML
+	private Button changeMapLayerButton;
+
+	@FXML
+	private Button saveUserChangesButton;
+
+	@FXML
+	private Label messageLabel;
+
+	@FXML
+	private ListView<MapLayer> layersListView;
+
+	@FXML
+	private PasswordField oldPasswordField;
+
+	@FXML
+	private ImageView TilePreviewImageView;
+
+	@FXML
+	private ListView<?> propertyListView;
+
+	@FXML
+	private Tab mapLayerTab;
+
+	@FXML
+	private TextField mapServerUrlTextField;
+
+	@FXML
+	private Button addMapLayerButton;
+
+	@FXML
+	private Button saveMapLayerButton;
+
+	@FXML
+	private TextField usernameTextField;
 
 	private double orgSceneX, orgSceneY;
 	private double orgTranslateX, orgTranslateY;
 	private double newTranslateX, newTranslateY;
 	private String initialBbox;
+	private int addressClickX, addressClickY;
 
 	public MainAppController() {
 		mapLayerDao = DaoFactory.INSTANCE.getMapLayerDao();
@@ -108,6 +158,13 @@ public class MainAppController {
 			this.userModel.setLastBoundingBox(bbox);
 			this.userModel.setLastZoom(13);
 			initialBbox = userModel.getLastBoundingBox();
+		}
+
+		// select default mapLayer
+		List<MapLayer> mapLayers = mapLayerDao.getAll(userModel.getUser());
+		// select default mapLayer
+		if (!mapLayers.isEmpty()) {
+			mapLayerModel.setMapLayer(mapLayers.get(0));
 		}
 	}
 
@@ -172,6 +229,38 @@ public class MainAppController {
 
 		});
 
+		// https://o7planning.org/en/11115/javafx-contextmenu-tutorial#a3821208
+		// Create ContextMenu
+		ContextMenu contextMenu = new ContextMenu();
+
+		MenuItem item1 = new MenuItem("save this address");
+		item1.setOnAction(actionEvent -> {
+			// do stuff
+			// open modal window to add address
+			System.out.println("saving address at: " + contextMenu.getX() + "; " + contextMenu.getY());
+			System.out.println("saving address at: " + mapCanvas.getTranslateX() + "; " + mapCanvas.getTranslateY());
+
+			CreateAddressController addressController = new CreateAddressController();
+			showModalWindow(addressController, "CreateAddress.fxml");
+
+		});
+
+		MenuItem item2 = new MenuItem("Menu Item 2");
+		item2.setOnAction(actionEvent -> {
+			// do other stuff
+		});
+
+		// Add MenuItem to ContextMenu
+		contextMenu.getItems().addAll(item1, item2);
+
+		mapCanvas.setOnContextMenuRequested(actionEvent -> {
+			contextMenu.show(mapCanvas, actionEvent.getScreenX(), actionEvent.getScreenY());
+			addressClickX = (int) actionEvent.getX();
+			addressClickY = (int) actionEvent.getY();
+			System.out.println(" relative to canvas: " + actionEvent.getX() + ", " + actionEvent.getY());
+			
+		});
+
 		// listen to changes of last bbox
 		userModel.lastBoundingBoxProperty().addListener(listener -> redrawMap());
 		userModel.lastZoomProperty().addListener(listener -> redrawMap());
@@ -186,6 +275,36 @@ public class MainAppController {
 		});
 		// zoomSlider.valueProperty().addListener(listener -> updateBBox());
 
+		// open listView for changing layers
+		changeMapLayerButton.setOnAction(actionEvent -> {
+			if (layersListView.isVisible()) {
+				layersListView.setVisible(false);
+			} else {
+				layersListView.setVisible(true);
+			}
+		});
+
+		// TODO dopln - ciastocne z prednasky
+		// layersListView.setItems(FXCollections.observableArrayList(userDao.getAll()));
+		layersListView.setItems(FXCollections.observableArrayList(mapLayerDao.getAll(userModel.getUser())));
+		layersListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<MapLayer>() {
+			@Override
+			public void changed(ObservableValue<? extends MapLayer> observable, MapLayer oldValue, MapLayer newValue) {
+				mapLayerModel.setMapLayer(newValue);
+			}
+		});
+
+		layersListView.setOnMouseClicked(actionEvent -> {
+			if (actionEvent.getButton() == MouseButton.SECONDARY) {
+				layersListView.setVisible(false);
+				mainTabPane.getSelectionModel().select(mapLayerTab);
+				redrawMap();
+			} else {
+				layersListView.setVisible(false);
+				redrawMap();
+			}
+		});
+
 		// mapLayer binding to map model
 		mapNameTextField.textProperty().bindBidirectional(mapLayerModel.nameProperty());
 		inputUrlTextField.textProperty().bindBidirectional(mapLayerModel.sampleTileUrlProperty());
@@ -195,6 +314,7 @@ public class MainAppController {
 		previewMapTileButton.setOnAction(actionEvent -> {
 			// validate url string
 			if (Utils.isValidURL(mapLayerModel.getSampleTileUrl())) {
+
 				Image tileImage = new Image(mapLayerModel.getSampleTileUrl());
 				TilePreviewImageView.setImage(tileImage);
 				mapLayerModel.setUrl(Utils.parseUrl2UrlMapBaseFormat(mapLayerModel.getSampleTileUrl()));
@@ -203,24 +323,22 @@ public class MainAppController {
 			}
 		});
 
-		// change layers
-		changeMapLayerButton.setOnAction(actionEvent -> {
-			if (layersScrollPane.isVisible()) {
-				layersScrollPane.setVisible(false);
-			} else {
-				layersScrollPane.setVisible(true);
-				// zobraz ikonky mapovych vrstiev
-
-			}
-		});
-
 		// save mapLayer to data storage
 		saveMapLayerButton.setOnAction(actionEvent -> {
 			// validate url string
-
-			// parse url to basemap format
-
-			mapLayerDao.save(mapLayerModel.getMapLayer(), userModel.getUser());
+			boolean isValidUrl = Utils.isValidURL(mapLayerModel.getSampleTileUrl());
+			if (isValidUrl) {
+				mapLayerDao.save(mapLayerModel.getMapLayer(), userModel.getUser());
+			}
+		});
+		addMapLayerButton.setOnAction(actionEvent -> {
+			// validate url string
+			boolean isValidUrl = Utils.isValidURL(mapLayerModel.getSampleTileUrl());
+			if (isValidUrl) {
+				mapLayerModel.setId(null);
+				mapLayerModel.setMapLayer(mapLayerDao.save(mapLayerModel.getMapLayer(), userModel.getUser()));
+				layersListView.getItems().add(mapLayerModel.getMapLayer());
+			}
 		});
 
 		// account settings tab
@@ -295,7 +413,7 @@ public class MainAppController {
 	private void updateBBox(int xShift, int yShift, boolean update) {
 		// get old BBOX from user
 		double[] oldBbox = MapUtils.bBoxString2DoubleArray(initialBbox);
-		// TODO zrataj vhodnu BBOX pre danu CANVAS
+		// zrataj vhodnu BBOX pre danu CANVAS
 		double mapCanvasPixelHeight = mapCanvas.getHeight();
 		double mapCanvasPixelWidth = mapCanvas.getWidth();
 
@@ -323,16 +441,9 @@ public class MainAppController {
 		}
 	}
 
+	// TODO implement viewing multiple layers at once (using alpha channel)
 	private void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
-
-		// TODO implement mapLayer slection
-		// select used mapLayer
-		List<MapLayer> mapLayers = mapLayerDao.getAll(userModel.getUser());
-		// select default mapLayer
-		if (!mapLayers.isEmpty()) {
-			mapLayerModel.setMapLayer(mapLayers.get(0));
-		}
 
 		// determine what tiles you need
 		LoadWebMap webMapLoader = new LoadWebMap(userModel.getUser(), mapLayerModel.getMapLayer(),
@@ -344,25 +455,38 @@ public class MainAppController {
 		int[] pixelPositionBbox = TileUtils.globe2pixel(globePositionBbox[0], globePositionBbox[1],
 				userModel.getLastZoom());
 
+		gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
 		// TODO: IMPLEMENT NEW THREAD FOR LOADING IMAGES
-		Image tileImage;
-		for (Tile tile : tileList) {
+
+		tileList.stream().forEach(tile -> {
+			Image tileImage;
 			// get map tiles
 			tileImage = webMapLoader.getTile(tile);
-			// TODO compute pixel position of imageTile in respect to BBox = canvas ->
-			// compute shift
 
 			// set pixel position for iterated tile
 			int[] pixelPosition = TileUtils.tile2pixel(tile);
 
-			int xPosition = pixelPosition[0] - pixelPositionBbox[0];// + (int) mapCanvas.getWidth();
-			int yPosition = pixelPosition[1] - pixelPositionBbox[1];// + (int) mapCanvas.getHeight();
+			int xPosition = pixelPosition[0] - pixelPositionBbox[0];
+			int yPosition = pixelPosition[1] - pixelPositionBbox[1];
 			// draw each tile into graphical context of canvas
-			// System.out.println(tile.toString() + "x position: " + xPosition + "; y
-			// position: " + yPosition);
 
 			gc.drawImage(tileImage, xPosition, yPosition);
-		}
+		});
+
+//		Image tileImage;
+//		for (Tile tile : tileList) {
+//			// get map tiles
+//			tileImage = webMapLoader.getTile(tile);
+//
+//			// set pixel position for iterated tile
+//			int[] pixelPosition = TileUtils.tile2pixel(tile);
+//
+//			int xPosition = pixelPosition[0] - pixelPositionBbox[0];
+//			int yPosition = pixelPosition[1] - pixelPositionBbox[1];
+//			// draw each tile into graphical context of canvas
+//
+//			gc.drawImage(tileImage, xPosition, yPosition);
+//		}
 		mapCanvas.setViewOrder(1);
 	}
 
@@ -371,6 +495,23 @@ public class MainAppController {
 		gc.setFill(Color.GREEN);
 		gc.fillRect(10, 10, mapCanvas.getWidth() - 20, mapCanvas.getHeight() - 20);
 
+	}
+	
+	private void showModalWindow(Object controller, String fxml) {
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxml));
+			fxmlLoader.setController(controller);
+			Parent rootPane = fxmlLoader.load();
+			Scene scene = new Scene(rootPane);
+
+			Stage dialog = new Stage();
+			dialog.setScene(scene);
+			dialog.initModality(Modality.APPLICATION_MODAL);
+			dialog.showAndWait();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

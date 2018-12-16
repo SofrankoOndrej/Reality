@@ -1,9 +1,25 @@
 package util;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.junit.jupiter.api.Test;
+
 import entities.MapLayer;
 import entities.Tile;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.image.Image;
 
 public class MapUtils {
 
@@ -41,9 +57,9 @@ public class MapUtils {
 			sb.append(mapLayer.getMapServerUrl());
 			sb.append(tile.getZoom());
 			sb.append("/");
-			sb.append(tile.getLongitude());
-			sb.append("/");
 			sb.append(tile.getLatitude());
+			sb.append("/");
+			sb.append(tile.getLongitude());
 
 			return sb.toString();
 		} else {
@@ -52,8 +68,6 @@ public class MapUtils {
 		}
 
 	}
-
-	
 
 	public static double[] bBoxString2DoubleArray(String bbox) {
 		String[] coordinates = bbox.split(",");
