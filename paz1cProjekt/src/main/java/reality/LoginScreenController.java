@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import persistent.DaoFactory;
 import persistent.UserDao;
 import entities.User;
+import fxModels.UserFxModel;
 
 public class LoginScreenController {
 

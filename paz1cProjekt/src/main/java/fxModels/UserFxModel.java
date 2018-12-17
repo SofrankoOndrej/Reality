@@ -1,4 +1,4 @@
-package reality;
+package fxModels;
 
 import entities.User;
 import javafx.beans.property.SimpleStringProperty;

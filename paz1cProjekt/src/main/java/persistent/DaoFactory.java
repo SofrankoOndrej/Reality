@@ -13,8 +13,14 @@ public enum DaoFactory {
 	private TileDao tileDao;
 	private PropertyDao propertyDao;
 	private AddressDao addressDao;
-
+	private ParticipantDao participantDao;
 	
+	public ParticipantDao getParticipantDao() {
+		if(participantDao == null) {
+			participantDao = new MysqlParticipantDao(getJdbcTemplate());
+		}
+		return participantDao;
+	}
 	public AddressDao getAddressDao() {
 		if (addressDao == null)
 			addressDao = new MysqlAddressDao(getJdbcTemplate());

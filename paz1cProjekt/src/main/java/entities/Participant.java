@@ -8,7 +8,6 @@ public class Participant {
 	private String role;
 	private String phone;
 	private String email;
-	private String webpage;
 
 	@Override
 	public String toString() {
@@ -53,14 +52,6 @@ public class Participant {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getWebpage() {
-		return webpage;
-	}
-
-	public void setWebpage(String webpage) {
-		this.webpage = webpage;
 	}
 
 	public long getId() {

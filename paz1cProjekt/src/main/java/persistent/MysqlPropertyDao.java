@@ -52,13 +52,14 @@ public class MysqlPropertyDao implements PropertyDao {
 			simpleJdbcInsert.withTableName("properties");
 			simpleJdbcInsert.usingGeneratedKeyColumns("id");
 
-			simpleJdbcInsert.usingColumns("name", "type", "rating", "users_id","addresses_id");
+			// TODO v databaze zmenit "address_id" na "addresses_id"
+			simpleJdbcInsert.usingColumns("name", "type", "rating", "users_id","address_id");
 			Map<String, Object> values = new HashMap<>();
 			values.put("name", property.getName());
 			values.put("type", property.getType());
 			values.put("rating", property.getRating());
 			values.put("users_id", user.getId());
-			values.put("addresses_id", address.getId());
+			values.put("address_id", address.getId());
 
 			Long id = simpleJdbcInsert.executeAndReturnKey(values).longValue();
 			property.setId(id);
@@ -72,7 +73,7 @@ public class MysqlPropertyDao implements PropertyDao {
 	}
 
 	private Property getById(Integer propertyId) {
-		String sql = "SELECT * FROM map_layers WHERE id = " + propertyId;
+		String sql = "SELECT * FROM properties WHERE id = " + propertyId;
 		Property property = new Property();
 		try {
 			property = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Property.class));
@@ -82,5 +83,17 @@ public class MysqlPropertyDao implements PropertyDao {
 			System.out.println("No properties to get.");
 			return null;
 		}
+	}
+
+	@Override
+	public List<Property> getFromBbox(User user, String bbox) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void delete(Property property) {
+		// TODO Auto-generated method stub
+		
 	}
 }

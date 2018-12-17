@@ -13,6 +13,11 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="382.0" prefWidth="349.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
+      <Label layoutX="23.0" layoutY="21.0" text="Address dialog" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
       
       <Label layoutX="20.0" layoutY="60.0" text="Country:" AnchorPane.leftAnchor="15.0">
          <font>
@@ -24,12 +29,12 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="20.0" layoutY="180.0" text="Number:" AnchorPane.leftAnchor="15.0">
+      <Label layoutX="20.0" layoutY="140.0" text="Street:" AnchorPane.leftAnchor="15.0">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="20.0" layoutY="140.0" text="Street:" AnchorPane.leftAnchor="15.0">
+      <Label layoutX="20.0" layoutY="180.0" text="Number:" AnchorPane.leftAnchor="15.0">
          <font>
             <Font size="14.0" />
          </font>
@@ -39,19 +44,6 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="23.0" layoutY="21.0" text="Address dialog" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-      <TextField fx:id="countryTextfield" layoutX="131.0" layoutY="60.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
-      <TextField fx:id="cityTextfield" layoutX="131.0" layoutY="100.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
-      <TextField fx:id="streetTextfield" layoutX="131.0" layoutY="140.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
-      <TextField fx:id="numberTextfield" layoutX="86.0" layoutY="180.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
-      <PasswordField fx:id="zipCodeTextfield" layoutX="145.0" layoutY="220.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
-      <Button fx:id="addPropertyButton" layoutX="175.0" layoutY="346.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="164.0" text="add property" AnchorPane.leftAnchor="175.0" />
-      <Button fx:id="addParticipantButton" layoutX="10.0" layoutY="346.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="156.0" text="assign to participant" AnchorPane.leftAnchor="10.0" />
-      <PasswordField fx:id="longitudeTextField" layoutX="145.0" layoutY="260.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
       <Label layoutX="20.0" layoutY="260.0" text="Longitude:" AnchorPane.leftAnchor="15.0">
          <font>
             <Font size="14.0" />
@@ -62,6 +54,14 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <PasswordField fx:id="latitudeTextField" layoutX="145.0" layoutY="300.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <TextField fx:id="countryTextfield" layoutX="131.0" layoutY="60.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <TextField fx:id="cityTextfield" layoutX="131.0" layoutY="100.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <TextField fx:id="streetTextfield" layoutX="131.0" layoutY="140.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <TextField fx:id="numberTextfield" layoutX="86.0" layoutY="180.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <TextField fx:id="zipCodeTextField" layoutX="86.0" layoutY="220.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <TextField fx:id="longitudeTextField" layoutX="86.0" layoutY="260.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <TextField fx:id="latitudeTextField" layoutX="86.0" layoutY="300.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <Button fx:id="addParticipantButton" layoutX="10.0" layoutY="346.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="156.0" text="assign to participant" AnchorPane.leftAnchor="10.0" />
+      <Button fx:id="addPropertyButton" layoutX="175.0" layoutY="346.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="164.0" text="add property" AnchorPane.leftAnchor="175.0" />
    </children>
 </AnchorPane>

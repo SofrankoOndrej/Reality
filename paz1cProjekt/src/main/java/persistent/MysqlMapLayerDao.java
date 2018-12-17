@@ -105,4 +105,11 @@ public class MysqlMapLayerDao implements MapLayerDao {
 		return null;
 	}
 
+	@Override
+	public boolean delete(MapLayer mapLayer) {
+		// TODO Auto-generated method stub
+		System.out.println("DELETing from mysql database");
+		return false;
+	}
+
 }

@@ -15,4 +15,6 @@ public interface MapLayerDao {
 	MapLayer save(MapLayer mapLayer, User user);
 
 	Image getThumbnail(MapLayer mapLayer);
+	
+	boolean delete(MapLayer mapLayer);
 }

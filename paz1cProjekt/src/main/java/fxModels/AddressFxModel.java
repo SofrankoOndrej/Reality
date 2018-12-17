@@ -1,11 +1,11 @@
-package reality;
+package fxModels;
 
 import entities.Address;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class AddressFxModel {
-	private Long id;
+//	private Long id;
 	private StringProperty state  = new SimpleStringProperty();
 	private StringProperty city = new SimpleStringProperty();
 	private StringProperty street  = new SimpleStringProperty();
@@ -28,7 +28,7 @@ public class AddressFxModel {
 	}
 	
 	public void setAddress(Address address) {
-		this.id = address.getId();
+//		this.id = address.getId();
 		setCity(address.getCity());
 		setState(address.getState());
 		setStreet(address.getStreet());

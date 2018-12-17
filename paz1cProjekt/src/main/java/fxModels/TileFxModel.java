@@ -1,4 +1,4 @@
-package reality;
+package fxModels;
 
 import entities.Tile;
 import javafx.beans.property.IntegerProperty;

@@ -13,7 +13,7 @@ public class Property {
 
 	@Override
 	public String toString() {
-		return name + ", " + type + ", " + rating + ", " + address.toString();
+		return name + ", " + type + ", " + rating;// + ", " + address.toString();
 	}
 
 	public Long getId() {

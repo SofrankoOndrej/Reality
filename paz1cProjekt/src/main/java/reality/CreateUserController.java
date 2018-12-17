@@ -1,6 +1,8 @@
 package reality;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import fxModels.UserFxModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -9,10 +11,6 @@ import persistent.DaoFactory;
 import persistent.UserDao;
 
 public class CreateUserController {
-
-	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
-	private UserFxModel createdUserModel;
-	// private UserFxModel createdUser = new UserFxModel();
 
 	@FXML
 	private Button createuserButton;
@@ -32,6 +30,10 @@ public class CreateUserController {
 	@FXML
 	private TextField usernameTextfield;
 
+	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
+	private UserFxModel createdUserModel;
+	// private UserFxModel createdUser = new UserFxModel();
+	
 	public CreateUserController() {
 		userDao = DaoFactory.INSTANCE.getUserDao();
 		createdUserModel = new UserFxModel();

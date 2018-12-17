@@ -99,6 +99,8 @@ public class LoadWebMap implements Map {
 				}
 
 				tileImage = new Image(tileInputStream);
+				tileInputStream.close(); 
+				
 				Tile tileDownloaded = TileUtils.saveTile(tileImage, tile, user.getCacheFolderPath(),
 						mapLayer.getName());
 				if (!(tileDownloaded.getCachedLocation() == null)) {
@@ -109,9 +111,9 @@ public class LoadWebMap implements Map {
 				return tileImage;
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				System.out.println("tile not found: " + constructedUrl);
-			}
+				// TODO construct 404 image
+			} 
 		}
 		// v pripade ak nastane vynimka
 		return tileImage;
