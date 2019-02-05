@@ -16,4 +16,6 @@ public interface PropertyDao {
 	List<Property> getFromBbox(User user, String bbox);
 
 	void delete(Property property);
+
+	Property getById(Long propertyId);
 }

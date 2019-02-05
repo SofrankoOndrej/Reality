@@ -85,7 +85,7 @@ public class MysqlAddressDao implements AddressDao {
 	}
 
 	@Override
-	public Address getById(int id) {
+	public Address getById(Long id) {
 		String sql = "SELECT * FROM addresses " + "WHERE id = " + id;
 		Address address;
 		try {

@@ -11,5 +11,5 @@ public interface AddressDao {
 
 	Address save(Address address);
 	
-	Address getById(int id);
+	Address getById(Long id);
 }

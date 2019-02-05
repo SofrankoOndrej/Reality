@@ -1,25 +1,10 @@
 package util;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import org.junit.jupiter.api.Test;
-
 import entities.MapLayer;
 import entities.Tile;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.image.Image;
 
 public class MapUtils {
 
@@ -42,6 +27,7 @@ public class MapUtils {
 				tileToAdd.setLongitude(longitude);
 				tileToAdd.setLatitude(latitude);
 				tileToAdd.setZoom(zoomLevel);
+				// tileList.contains(tileToAdd);
 				tileList.add(tileToAdd);
 			}
 		}
@@ -51,7 +37,7 @@ public class MapUtils {
 
 	public static String constructUrl(MapLayer mapLayer, Tile tile) {
 		// create URL of map tile based on mapLayer basemap type
-		if (mapLayer.getTileUrlFormat() == null) {
+		if (mapLayer.getFormatString() == null) {
 			// default fallback for tile url format
 			StringBuilder sb = new StringBuilder();
 			sb.append(mapLayer.getMapServerUrl());
@@ -63,8 +49,16 @@ public class MapUtils {
 
 			return sb.toString();
 		} else {
-			// naformatuj podla formatovacieho retazca
-			return null;
+			StringBuilder sb = new StringBuilder();
+			sb.append(mapLayer.getMapServerUrl());
+			
+			String formatString = mapLayer.getFormatString();
+			formatString = formatString.replaceAll("ZOOM", Integer.toString(tile.getZoom()));
+			formatString = formatString.replaceAll("LONG", Integer.toString(tile.getLongitude()));
+			formatString = formatString.replaceAll("LAT", Integer.toString(tile.getLatitude()));
+			sb.append(formatString);
+
+			return sb.toString();
 		}
 
 	}

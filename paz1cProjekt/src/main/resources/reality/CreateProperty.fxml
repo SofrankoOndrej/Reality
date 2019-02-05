@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="349.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="419.0" prefWidth="349.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       
       <Label layoutX="22.0" layoutY="60.0" text="Name:" AnchorPane.leftAnchor="15.0">
@@ -24,7 +24,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="16.0" layoutY="180.0" text="Address:" AnchorPane.leftAnchor="15.0">
+      <Label layoutX="15.0" layoutY="282.0" text="Address:" AnchorPane.leftAnchor="15.0">
          <font>
             <Font size="14.0" />
          </font>
@@ -34,7 +34,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="27.0" layoutY="220.0" text="Participants: " AnchorPane.leftAnchor="15.0">
+      <Label layoutX="15.0" layoutY="316.0" text="Participants: " AnchorPane.leftAnchor="15.0">
          <font>
             <Font size="14.0" />
          </font>
@@ -46,9 +46,27 @@
       </Label>
       <TextField fx:id="nameTextfield" layoutX="131.0" layoutY="60.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
       <TextField fx:id="ratingTextField" layoutX="131.0" layoutY="100.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
-      <TextField fx:id="addressTextfield" disable="true" editable="false" layoutX="86.0" layoutY="180.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
-      <Button fx:id="savePropertyButton" layoutX="40.0" layoutY="340.0" mnemonicParsing="false" text="Save property" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" />
-      <ListView fx:id="participantsListView" layoutX="93.0" layoutY="220.0" prefHeight="107.0" prefWidth="246.0" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="95.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="220.0" />
+      <TextField fx:id="addressTextfield" disable="true" editable="false" layoutX="86.0" layoutY="282.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <Button fx:id="savePropertyButton" layoutX="40.0" layoutY="344.0" mnemonicParsing="false" text="Save property" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" />
+      <ListView fx:id="participantsListView" layoutX="94.0" layoutY="320.0" prefHeight="54.0" prefWidth="244.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="94.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="320.0" />
       <TextField fx:id="typeTextField" layoutX="86.0" layoutY="140.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <TextField fx:id="descriptionTextField" layoutX="86.0" layoutY="177.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <Label layoutX="21.0" layoutY="177.0" text="Description:" AnchorPane.leftAnchor="15.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="urlTextField" layoutX="86.0" layoutY="212.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
+      <Label layoutX="21.0" layoutY="212.0" text="Url:" AnchorPane.leftAnchor="15.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="21.0" layoutY="245.0" text="Price:" AnchorPane.leftAnchor="15.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="priceTextField" layoutX="86.0" layoutY="247.0" prefHeight="25.0" prefWidth="253.0" AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="10.0" />
    </children>
 </AnchorPane>

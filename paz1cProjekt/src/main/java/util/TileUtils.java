@@ -64,7 +64,7 @@ public class TileUtils {
 	}
 
 	/*
-	 * returns pixel location, of geo location, in mercator projection at specified
+	 * returns pixel location of geo location, in mercator projection at specified
 	 * zoom. Tile size is set to 256 px
 	 */
 	public static int[] globe2pixel(double longitude, double latitude, int zoom) {

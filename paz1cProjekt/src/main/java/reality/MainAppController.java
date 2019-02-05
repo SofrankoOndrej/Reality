@@ -2,6 +2,7 @@ package reality;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -82,6 +83,9 @@ public class MainAppController {
 	@FXML
 	private TextField mapNameTextField;
 
+	@FXML
+	private TextField formatStringTextField;
+	
 	@FXML
 	private Canvas mapCanvas;
 
@@ -197,45 +201,6 @@ public class MainAppController {
 			updateBBox(0, 0, true);
 		});
 
-		// listen to mouse gestures
-		mapCanvas.setOnMousePressed(mapOnMousePressedEventHandler -> {
-			orgSceneX = mapOnMousePressedEventHandler.getX();
-			orgSceneY = mapOnMousePressedEventHandler.getY();
-			orgTranslateX = mapCanvas.getTranslateX();
-			orgTranslateY = mapCanvas.getTranslateY();
-
-		});
-
-		mapCanvas.setOnMouseDragged(mapOnMouseDraggedEventHandler -> {
-			double offsetX = mapOnMouseDraggedEventHandler.getX() - orgSceneX;
-			double offsetY = mapOnMouseDraggedEventHandler.getY() - orgSceneY;
-			newTranslateX = orgTranslateX + offsetX;
-			newTranslateY = orgTranslateY + offsetY;
-			// System.out.println(newTranslateX + ", " + newTranslateY);
-			// System.out.println(initialBbox);
-			updateBBox((int) -newTranslateX, (int) -newTranslateY, false);
-		});
-
-		mapCanvas.setOnMouseReleased(mapOnMouseDragRealesedEventHandler -> {
-			// System.out.println("UPDATED: " + newTranslateX + ", " + newTranslateY);
-			// System.out.println(initialBbox);
-			updateBBox((int) -newTranslateX, (int) -newTranslateY, true);
-			newTranslateX = 0;
-			newTranslateY = 0;
-		});
-
-		mapCanvas.setOnScroll(scrollEventHandler -> {
-			double pixelsToScroll = scrollEventHandler.getDeltaY() / scrollEventHandler.getMultiplierY();
-			userModel.setLastZoom(userModel.getLastZoom() + pixelsToScroll);
-			if (userModel.getLastZoom() < 10) {
-				userModel.setLastZoom(10);
-			}
-			if (userModel.getLastZoom() > 18) {
-				userModel.setLastZoom(18);
-			}
-
-		});
-
 		// listen to changes of last bbox
 		userModel.lastBoundingBoxProperty().addListener(listener -> redrawMap());
 		userModel.lastZoomProperty().addListener(listener -> redrawMap());
@@ -246,15 +211,51 @@ public class MainAppController {
 			updateBBox(0, 0, true);
 		});
 
-		// kontextove menu mapy
-		kontextoveMenu = new ContextMenus(userModel.getUser());
-		ContextMenu canvasContextMenu = kontextoveMenu.getCanvasContextMenu();
+		// MOUSE GESTURES
+		// listen to mouse gestures
+		mapCanvas.setOnMousePressed(mapOnMousePressedEventHandler -> {
+			orgSceneX = mapOnMousePressedEventHandler.getX();
+			orgSceneY = mapOnMousePressedEventHandler.getY();
+			orgTranslateX = mapCanvas.getTranslateX();
+			orgTranslateY = mapCanvas.getTranslateY();
+		});
 
+		mapCanvas.setOnMouseDragged(mapOnMouseDraggedEventHandler -> {
+			double offsetX = mapOnMouseDraggedEventHandler.getX() - orgSceneX;
+			double offsetY = mapOnMouseDraggedEventHandler.getY() - orgSceneY;
+			newTranslateX = orgTranslateX + offsetX;
+			newTranslateY = orgTranslateY + offsetY;
+			updateBBox((int) -newTranslateX, (int) -newTranslateY, false);
+		});
+
+		mapCanvas.setOnMouseReleased(mapOnMouseDragRealesedEventHandler -> {
+			updateBBox((int) -newTranslateX, (int) -newTranslateY, true);
+			newTranslateX = 0;
+			newTranslateY = 0;
+		});
+
+		mapCanvas.setOnScroll(scrollEventHandler -> {
+			double pixelsToScroll = scrollEventHandler.getDeltaY() / scrollEventHandler.getMultiplierY();
+			userModel.setLastZoom(userModel.getLastZoom() + pixelsToScroll);
+			if (userModel.getLastZoom() < 7) {
+				userModel.setLastZoom(7);
+			}
+			if (userModel.getLastZoom() > 18) {
+				userModel.setLastZoom(18);
+			}
+		});
+
+		// kontextove menu mapy
 		mapCanvas.setOnContextMenuRequested(actionEvent -> {
-			canvasContextMenu.show(mapCanvas, actionEvent.getScreenX(), actionEvent.getScreenY());
+			kontextoveMenu = new ContextMenus(userModel.getUser());
 			// poloha pridania nehnutelnosti
 			kontextoveMenu.setxClick((int) actionEvent.getX());
 			kontextoveMenu.setyClick((int) actionEvent.getY());
+
+			ContextMenu canvasContextMenu = kontextoveMenu.getCanvasContextMenu();
+
+			canvasContextMenu.show(mapCanvas, actionEvent.getScreenX(), actionEvent.getScreenY());
+
 		});
 
 		// open listView for changing layers
@@ -325,18 +326,15 @@ public class MainAppController {
 				propertyFxModel.setProperty(newValue);
 			}
 		});
-		// TODO kontextove menu property
+		// kontextove menu property
 		ContextMenu propertySelectionContextMenu = new ContextMenu();
 		// polozky v menu
 		MenuItem editPropertyItem = new MenuItem("edit property");
 		editPropertyItem.setOnAction(actionEvent -> {
-			// switch to mapLayer edit tab
-			System.out.println("editing property");
-			Address address = new Address();
-			address.setStreet("");
-			address.setNumber("");
-			CreatePropertyController propertyController = new CreatePropertyController(userModel.getUser(), address);
+			// edit property
+			CreatePropertyController propertyController = new CreatePropertyController(userModel.getUser(), propertyDao.getById(propertyFxModel.getProperty().getId()));
 			showModalWindow(propertyController, "../reality/CreateProperty.fxml");
+			
 		});
 
 		MenuItem deletePropertyItem = new MenuItem("delete property");
@@ -365,6 +363,7 @@ public class MainAppController {
 		mapNameTextField.textProperty().bindBidirectional(mapLayerModel.nameProperty());
 		inputUrlTextField.textProperty().bindBidirectional(mapLayerModel.sampleTileUrlProperty());
 		mapServerUrlTextField.textProperty().bindBidirectional(mapLayerModel.mapServerUrlProperty());
+		formatStringTextField.textProperty().bindBidirectional(mapLayerModel.formatStringProperty());
 
 		// preview map TILE from URL
 		previewMapTileButton.setOnAction(actionEvent -> {
@@ -478,7 +477,7 @@ public class MainAppController {
 			dialog.initModality(Modality.APPLICATION_MODAL);
 			dialog.showAndWait();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -514,6 +513,9 @@ public class MainAppController {
 		}
 	}
 
+	// mimo redraw function kvoli multiThreadingu
+//	GraphicsContext gc = mapCanvas.getGraphicsContext2D();
+
 	// TODO implement viewing multiple layers at once (using alpha channel)
 	public void redrawMap() {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
@@ -525,37 +527,62 @@ public class MainAppController {
 
 		// get pixel position of mapCanvas
 		double[] globePositionBbox = MapUtils.bBoxString2DoubleArray(userModel.getLastBoundingBox());
-		int[] pixelPositionBbox = TileUtils.globe2pixel(globePositionBbox[0], globePositionBbox[1],
+		int[] bboxPixelPosition = TileUtils.globe2pixel(globePositionBbox[0], globePositionBbox[1],
 				userModel.getLastZoom());
 
 		gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
 
 		// NEW THREADS FOR LOADING IMAGES
-		// loading via stream loads tiles concurrently
+		// loading via stream loads tiles concurrently - canvas token errors 
+		// tileList.parallelStream().forEach(tile -> {
 		tileList.stream().forEach(tile -> {
-			Image tileImage;
 			// get map tiles
-			tileImage = webMapLoader.getTile(tile);
-
+			Image tileImage = webMapLoader.getTile(tile);
 			// set pixel position for iterated tile
-			int[] pixelPosition = TileUtils.tile2pixel(tile);
-
-			int xPosition = pixelPosition[0] - pixelPositionBbox[0];
-			int yPosition = pixelPosition[1] - pixelPositionBbox[1];
+			int[] tilePixelPosition = TileUtils.tile2pixel(tile);
+			int xPosition = tilePixelPosition[0] - bboxPixelPosition[0];
+			int yPosition = tilePixelPosition[1] - bboxPixelPosition[1];
 			// draw each tile into graphical context of canvas
 			gc.drawImage(tileImage, xPosition, yPosition);
 		});
 		mapCanvas.setViewOrder(2);
 
-		// TODO get properties inside BBOX
+		// get properties inside BBOX
+		List<Property> propertiesInBbox = propertyDao.getFromBbox(userModel.getUser(), userModel.getLastBoundingBox());
 
-		// TODO draw symbols at positions of properties
-
+		// TODO load image for properties
+		// draw symbols at positions of properties
+		if (propertiesInBbox != null) {
+			int zoom = userModel.getLastZoom();
+			int poradie = 1;
+			for(Property property : propertiesInBbox) {
+				double latitude = Double.parseDouble(property.getAddress().getLatitude());
+				double longitude = Double.parseDouble(property.getAddress().getLongitude());
+				int[] propertyPixelPosition = TileUtils.globe2pixel(longitude, latitude, zoom);
+				int xPosition = propertyPixelPosition[0] - bboxPixelPosition[0];
+				int yPosition = propertyPixelPosition[1] - bboxPixelPosition[1];
+				drawInCanvas(xPosition, yPosition,poradie);
+				poradie++;
+			}
+//			propertiesInBbox.stream().forEach(property -> {
+//				double latitude = Double.parseDouble(property.getAddress().getLatitude());
+//				double longitude = Double.parseDouble(property.getAddress().getLongitude());
+//				int[] propertyPixelPosition = TileUtils.globe2pixel(longitude, latitude, zoom);
+//				int xPosition = propertyPixelPosition[0] - bboxPixelPosition[0];
+//				int yPosition = propertyPixelPosition[1] - bboxPixelPosition[1];
+//				drawInCanvas(xPosition, yPosition,poradie);
+//				//poradie=poradie + 1;
+//			});
+		}
 	}
 
-	public void drawInCanvas() {
+	public void drawInCanvas(int x, int y,int poradie) {
 		GraphicsContext gc = mapCanvas.getGraphicsContext2D();
-		gc.setFill(Color.GREEN);
-		gc.fillRect(10, 10, mapCanvas.getWidth() - 20, mapCanvas.getHeight() - 20);
+		gc.setFill(Color.RED);
+		int size = 18;
+		gc.fillOval(x - size / 2, y - size / 2, size, size);
+		gc.setFill(Color.WHITE);
+		gc.fillText(Integer.toString(poradie), x-3, y+4,50);
+		
 	}
 }

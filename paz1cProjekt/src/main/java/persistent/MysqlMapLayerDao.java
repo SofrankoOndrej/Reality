@@ -30,11 +30,12 @@ public class MysqlMapLayerDao implements MapLayerDao {
 			simpleJdbcInsert.withTableName("map_layers");
 			simpleJdbcInsert.usingGeneratedKeyColumns("id");
 
-			simpleJdbcInsert.usingColumns("name", "mapServerUrl", "sampleTileUrl", "users_id");
+			simpleJdbcInsert.usingColumns("name", "mapServerUrl", "sampleTileUrl", "formatString", "users_id");
 			Map<String, Object> hodnoty = new HashMap<>();
 			hodnoty.put("name", mapLayer.getName());
 			hodnoty.put("sampleTileUrl", mapLayer.getSampleTileUrl());
 			hodnoty.put("mapServerUrl", mapLayer.getMapServerUrl());
+			hodnoty.put("formatString", mapLayer.getFormatString());
 			hodnoty.put("users_id", user.getId());
 
 			Long id = simpleJdbcInsert.executeAndReturnKey(hodnoty).longValue();
@@ -80,25 +81,26 @@ public class MysqlMapLayerDao implements MapLayerDao {
 			simpleJdbcInsert.withTableName("map_layers");
 			simpleJdbcInsert.usingGeneratedKeyColumns("id");
 
-			simpleJdbcInsert.usingColumns("name", "mapServerUrl", "sampleTileUrl", "users_id");
+			simpleJdbcInsert.usingColumns("name", "mapServerUrl", "sampleTileUrl", "formatString", "users_id");
 			Map<String, Object> hodnoty = new HashMap<>();
 			hodnoty.put("name", mapLayer.getName());
 			hodnoty.put("sampleTileUrl", mapLayer.getSampleTileUrl());
 			hodnoty.put("mapServerUrl", mapLayer.getMapServerUrl());
+			hodnoty.put("formatString", mapLayer.getFormatString());
 			hodnoty.put("users_id", user.getId());
 
 			Long id = simpleJdbcInsert.executeAndReturnKey(hodnoty).longValue();
 			mapLayer.setId(id);
 		} else {
 			// UPDATE
-			String sql = "UPDATE map_layers SET " + "name = ? mapServerUrl = ? sampleTileUrl = ? " + " WHERE id = ? ";
+			String sql = "UPDATE map_layers SET " + "name = ? mapServerUrl = ? sampleTileUrl = ? formatString = ? "
+					+ " WHERE id = ? ";
 			jdbcTemplate.update(sql, mapLayer.getName(), mapLayer.getMapServerUrl(), mapLayer.getSampleTileUrl(),
-					mapLayer.getId());
+					mapLayer.getFormatString(), mapLayer.getId());
 		}
 		return mapLayer;
 	}
 
-	
 	@Override
 	public Image getThumbnail(MapLayer mapLayer) {
 		// TODO Auto-generated method stub

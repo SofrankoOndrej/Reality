@@ -12,6 +12,7 @@ public class MapLayerFxModel {
 	private StringProperty sampleTileUrl = new SimpleStringProperty();
 	private StringProperty cacheFolderPath = new SimpleStringProperty();
 	private StringProperty tileUrlFormat = new SimpleStringProperty();
+	private StringProperty formatString = new SimpleStringProperty();
 
 	public MapLayer getMapLayer() {
 		MapLayer mapLayer = new MapLayer();
@@ -21,6 +22,7 @@ public class MapLayerFxModel {
 		mapLayer.setSampleTileUrl(getSampleTileUrl());
 		mapLayer.setCacheFolderPath(getCacheFolderPath());
 		mapLayer.setTileUrlFormat(getTileUrlFormat());
+		mapLayer.setFormatString(getFormatString());
 		return mapLayer;
 	}
 
@@ -31,6 +33,19 @@ public class MapLayerFxModel {
 		this.setSampleTileUrl(mapLayer.getSampleTileUrl());
 		this.setCacheFolderPath(mapLayer.getCacheFolderPath());
 		this.setTileUrlFormat(mapLayer.getTileUrlFormat());
+		this.setFormatString(mapLayer.getFormatString());
+	}
+
+	public void setFormatString(String formatString) {
+		this.formatString.set(formatString);
+	}
+
+	public String getFormatString() {
+		return formatString.get();
+	}
+
+	public StringProperty formatStringProperty() {
+		return formatString;
 	}
 
 	public void setTileUrlFormat(String tileUrlFormat) {

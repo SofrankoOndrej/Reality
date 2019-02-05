@@ -8,6 +8,7 @@ public class MapLayer {
 	private String sampleTileUrl;
 	private String cacheFolderPath;
 	private String tileUrlFormat;
+	private String formatString;
 
 	public String getSampleTileUrl() {
 		return sampleTileUrl;
@@ -55,6 +56,14 @@ public class MapLayer {
 
 	public void setTileUrlFormat(String tileUrlFormat) {
 		this.tileUrlFormat = tileUrlFormat;
+	}
+
+	public String getFormatString() {
+		return formatString;
+	}
+
+	public void setFormatString(String formatString) {
+		this.formatString = formatString;
 	}
 
 	@Override

@@ -10,6 +10,10 @@ public class Property {
 	private String type;
 	private Address address;
 	private List<Participant> participants;
+	private Long address_id;
+	private String description;
+	private String url;
+	private String price;
 
 	@Override
 	public String toString() {
@@ -62,6 +66,38 @@ public class Property {
 
 	public void setParticipants(List<Participant> participants) {
 		this.participants = participants;
+	}
+
+	public Long getAddress_id() {
+		return address_id;
+	}
+
+	public void setAddress_id(Long address_id) {
+		this.address_id = address_id;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
 	}
 
 }

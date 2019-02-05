@@ -55,6 +55,15 @@ public class CreatePropertyController {
 	@FXML
 	private TextField nameTextfield;
 
+	@FXML
+	private TextField urlTextField;
+
+	@FXML
+	private TextField priceTextField;
+
+	@FXML
+	private TextField descriptionTextField;
+
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 	private UserFxModel userFxModel = new UserFxModel();
 	private User user;
@@ -74,9 +83,10 @@ public class CreatePropertyController {
 		userFxModel.setUser(user);
 	}
 
-	public CreatePropertyController(User user, Address address, Property property) {
+	public CreatePropertyController(User user, Property property) {
 		this.user = user;
-		this.address = address;
+		this.address = addresDao.getById(property.getAddress_id());
+		this.propertyFxModel.setProperty(property);
 		// TODO load all participants - only if updating
 		if (property.getParticipants() != null) {
 			participantList = participantDao.getAll(property);
@@ -89,17 +99,21 @@ public class CreatePropertyController {
 		ratingTextField.textProperty().bindBidirectional(propertyFxModel.ratingProperty());
 		nameTextfield.textProperty().bindBidirectional(propertyFxModel.nameProperty());
 		typeTextField.textProperty().bindBidirectional(propertyFxModel.typeProperty());
+		descriptionTextField.textProperty().bindBidirectional(propertyFxModel.descriptionProperty());
+		urlTextField.textProperty().bindBidirectional(propertyFxModel.urlProperty());
+		priceTextField.textProperty().bindBidirectional(propertyFxModel.priceProperty());
+
 		addressTextfield.setText(address.toString());
 
 		// kontextove menu participantov
-		participantsListView.setItems(FXCollections.observableArrayList(participantList));
-		participantsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Participant>() {
-			@Override
-			public void changed(ObservableValue<? extends Participant> observable, Participant oldValue,
-					Participant newValue) {
-				participantFxModel.setParticipant(newValue);
-			}
-		});
+//		participantsListView.setItems(FXCollections.observableArrayList(participantList));
+//		participantsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Participant>() {
+//			@Override
+//			public void changed(ObservableValue<? extends Participant> observable, Participant oldValue,
+//					Participant newValue) {
+//				participantFxModel.setParticipant(newValue);
+//			}
+//		});
 
 		// context menu for participants on properties
 		ContextMenu participantSelectionContextMenu = new ContextMenu();
@@ -140,6 +154,10 @@ public class CreatePropertyController {
 		// save property
 		savePropertyButton.setOnAction(actionEvent -> {
 			propertyDao.save(propertyFxModel.getProperty(), user, address);
+
+			// draw point into map
+
+			// update listview of properties
 
 			// close this dialog
 			Stage stage = (Stage) savePropertyButton.getScene().getWindow();

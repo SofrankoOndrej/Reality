@@ -57,7 +57,7 @@ public class ContextMenus {
 			showModalWindow(addressController, "../reality/CreateAddress.fxml");
 		});
 
-		MenuItem item2 = new MenuItem("Menu Item 2");
+		MenuItem item2 = new MenuItem("do other stuff..");
 		item2.setOnAction(actionEvent -> {
 			// TODO do other stuff
 		});
